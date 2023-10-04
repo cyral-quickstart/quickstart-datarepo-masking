@@ -9,6 +9,7 @@ Cyral's custom masking feature enables tailored masking behaviors, ensuring prec
 - Database engineers for writing UDFs. 
 - Database administrators for installing the UDFs.
   - Permissions, such as `CREATE SCHEMA`, `CREATE DATABASE`, or `CREATE ANY PROCEDURE`, may be required, depending on the underlying Database system. Specific requirements and instructions are present in the description of each masking example.
+- Database administrators for giving end-users the required permissions to executed the UDFs.
 - Cyral administrators for creating data policies and configuring data repositories.
 
 <br><br>
