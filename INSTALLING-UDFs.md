@@ -85,8 +85,11 @@ LANGUAGE PLPGSQL;
 ```
 Above we have a simplistic UDF example that receives a column entry of type `text` and returns another `text` value with all characters of the input columns replaced by `*`. 
 
-To install it, you can save it to a file, for example `mask_string.sql`, and run the following command:
+To install it, you can save it to a file, for example `mask_string.sql`, and run the following command: <br>
 `psql -h ${SIDECAR_HOST} -p 5432 -d ${DATABASE} -U ${USER} -f ./mask_string.sql`
+
+<br>
+
 The expected output from the server is: 
 `CREATE FUNCTION`
 
