@@ -25,7 +25,7 @@ Click on the desirable Database System below to see specific requirements and co
 
 <details>
   <summary>
-    <picture><img src="./.github/imgs/databases/postgresql-name.png" alt="PostgreSQL" height="45"></picture>
+    <picture><img src="../.github/imgs/databases/postgresql-name.png" alt="PostgreSQL" height="45"></picture>
   </summary>
 
 
@@ -130,7 +130,7 @@ finance=> SELECT cyral.mask_string(name) from CompBandTable LIMIT 3;
 
 <details>
   <summary>
-     <picture><img src="./.github/imgs/databases/redshift-name.png" alt="Redshift" height="45"></picture>
+     <picture><img src="../.github/imgs/databases/redshift-name.png" alt="Redshift" height="45"></picture>
   </summary>
 
 ```
@@ -145,7 +145,7 @@ finance=> SELECT cyral.mask_string(name) from CompBandTable LIMIT 3;
 
 <details>
   <summary>
-     <picture><img src="./.github/imgs/databases/snowflake-name.png" alt="Snowflake" height="45"></picture>
+     <picture><img src="../.github/imgs/databases/snowflake-name.png" alt="Snowflake" height="45"></picture>
   </summary>
 
 
@@ -161,7 +161,7 @@ finance=> SELECT cyral.mask_string(name) from CompBandTable LIMIT 3;
 
 <details>
   <summary>
-     <picture><img src="./.github/imgs/databases/mysql-name.png" alt="MySQL" height="45"></picture>
+     <picture><img src="../.github/imgs/databases/mysql-name.png" alt="MySQL" height="45"></picture>
   </summary>
 
 
@@ -178,7 +178,7 @@ finance=> SELECT cyral.mask_string(name) from CompBandTable LIMIT 3;
 
 <details>
   <summary>
-     <picture><img src="./.github/imgs/databases/sqlserver-name.png" alt="SQL Server" height="45"></picture>
+     <picture><img src="../.github/imgs/databases/sqlserver-name.png" alt="SQL Server" height="45"></picture>
   </summary>
 
 
@@ -193,7 +193,7 @@ finance=> SELECT cyral.mask_string(name) from CompBandTable LIMIT 3;
 
 <details>
   <summary>
-     <picture><img src="./.github/imgs/databases/oracle-name.png" alt="Oracle" height="45"></picture>
+     <picture><img src="../.github/imgs/databases/oracle-name.png" alt="Oracle" height="45"></picture>
   </summary>
 
 
