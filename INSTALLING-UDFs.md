@@ -2,6 +2,7 @@
 
 
 <br>
+
 ### Overview
 
 User-defined functions (UDFs) are key components for enforcing Cyral masking policies with specialized behaviors. These functions are usually installed within a database/schema entity inside your Database system. Users can refer to these functions in their query by specifying the function name, with an optional schema/database qualifier. 
@@ -10,19 +11,21 @@ This guide provides the required information on how to install user defined func
 
 
 <br>
+
 ### Requirements
 
 * Database administrator with enough permissions to create UDFs and to grant the execute permission on these UDFs to other database users. Specific instructions are provided on a per database level.
 * A Database instance.
 
 <br>
+
 ### Installing UDFs
 
 Click on the desirable Database System below to see specific requirements and commands:
 
 <details>
   <summary>
-    <img src="./.github/imgs/databases/postgresql-name.png" alt="PostgreSQL" height="45">
+    <picture><img src="./.github/imgs/databases/postgresql-name.png" alt="PostgreSQL" height="45"></picture>
   </summary>
 
 
@@ -129,7 +132,7 @@ finance=> SELECT cyral.mask_string(name) from CompBandTable LIMIT 3;
 
 <details>
   <summary>
-    <img src="./.github/imgs/databases/redshift-name.png" alt="Redshift" height="45">
+     <picture><img src="./.github/imgs/databases/redshift-name.png" alt="Redshift" height="45"></picture>
   </summary>
 
 ```
@@ -144,7 +147,7 @@ finance=> SELECT cyral.mask_string(name) from CompBandTable LIMIT 3;
 
 <details>
   <summary>
-    <img src="./.github/imgs/databases/snowflake-name.png" alt="Snowflake" height="45">
+     <picture><img src="./.github/imgs/databases/snowflake-name.png" alt="Snowflake" height="45"></picture>
   </summary>
 
 
@@ -160,7 +163,7 @@ finance=> SELECT cyral.mask_string(name) from CompBandTable LIMIT 3;
 
 <details>
   <summary>
-    <img src="./.github/imgs/databases/mysql-name.png" alt="MySQL" height="45">
+     <picture><img src="./.github/imgs/databases/mysql-name.png" alt="MySQL" height="45"></picture>
   </summary>
 
 
@@ -177,7 +180,7 @@ finance=> SELECT cyral.mask_string(name) from CompBandTable LIMIT 3;
 
 <details>
   <summary>
-    <img src="./.github/imgs/databases/sqlserver-name.png" alt="SQL Server" height="45">
+     <picture><img src="./.github/imgs/databases/sqlserver-name.png" alt="SQL Server" height="45"></picture>
   </summary>
 
 
@@ -192,7 +195,7 @@ finance=> SELECT cyral.mask_string(name) from CompBandTable LIMIT 3;
 
 <details>
   <summary>
-    <img src="./.github/imgs/databases/oracle-name.png" alt="Oracle" height="45">
+     <picture><img src="./.github/imgs/databases/oracle-name.png" alt="Oracle" height="45"></picture>
   </summary>
 
 
