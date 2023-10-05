@@ -37,33 +37,16 @@ Click on the desirable Database System below to see specific requirements and co
   * `GRANT`, to allow grant usage to different users. 
     * [Command reference.](https://www.postgresql.org/docs/current/sql-grant.html)
 
-  #### Install commands
+  #### Install script
 
-  1. **Connect to the database using your client application of choice, e.g. `psql`:**
-```
-psql -h ${SIDECAR_ENDPOINT} -p 5432 -d ${DATABASE_NAME} -U ${USER_NAME}
+```sql
+# 1. Create a new (optional) schema for storing the desired UDFs:
 
-psql (14.5, server 14.7)
-SSL connection (protocol: TLSv1.2, cipher: ECDHE-RSA-AES256-GCM-SHA384, bits: 256, compression: off)
-Type "help" for help.
+CREATE SCHEMA IF NOT EXISTS cyral;
 
-finance=> 
-```
-`finance` is the name of our database entity inside this PostgreSQL instance. 
 
-<br>
+# 2. Create the new function in the target schema:
 
-  2. **Optionally, create a new schema for storing all your user-defined functions:**
-```
-finance=> create schema if not exists cyral;
-CREATE SCHEMA
-```
-`cyral` is the name for the new schema created with the above command. You, as an admin, are free to choose the schema of your choice, however it's advised to review the '[installing UDFs in a centralized location](./CONTRIBUTING.md)' section to understand the impact of the schema used in Cyral policies.
-
-<br>
-
-  3. **Create the user defined function for transforming the desirable data:**
-```SQL
 CREATE OR REPLACE FUNCTION cyral.mask_string(input_string text)
 RETURNS text AS
 $$
@@ -82,35 +65,37 @@ BEGIN
 END;
 $$
 LANGUAGE PLPGSQL;
-```
-Above we have a simplistic UDF example that receives a column entry of type `text` and returns another `text` value with all characters of the input columns replaced by `*`. 
-
-To install it, you can save it to a file, for example `mask_string.sql`, and run the following command: <br>
-`psql -h ${SIDECAR_HOST} -p 5432 -d ${DATABASE} -U ${USER} -f ./mask_string.sql`
-
-<br>
-
-The expected output from the server is: 
-`CREATE FUNCTION`
 
 
-> *To a list of real-world example UDFs, please refer to: [masking-examples](./masking-examples/)*.
+# 3. Grant the execution privilege to everyone, through the PUBLIC role
 
-
-<br>
-
-
-  4. **Grant execute permissions for all users on this function:**
-```SQL
 GRANT EXECUTE ON FUNCTION cyral.mask_string(text) TO PUBLIC;
 ```
-On **PostgreSQL**, we can grant permissions to everyone by granting the desired priviledge to the `PUBLIC` role.
+
+The above script can be saved to a file, e.g. `example-udf-postgresql.sql`, and can be copied as is and executed in your application of choice. In `psql`, it can be installed with the following command: <br>
+
+`psql -h ${SIDECAR_HOST} -p 5432 -d ${DATABASE} -U ${USER} -f ./example-udf-postgresql.sql`
+
+where:
+    - `SIDECAR_HOST` points to the sidecar being used to protect your PostgreSQL database. 
+    - `DATABASE` refers to the underlying database entity, which contains a collection of schemas and tables.
+    - `USER` is the specific database user, which has the the required permissions to executed the above SQL commands.
 
 
-<br>
+#### Notes
+ 1. The above script creates a new optional schema, named `cyral`. Any other schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#add-section) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
+
+ 2. Above we have a simplistic UDF example that receives a column entry of type `text` and returns another `text` value with all characters of the input columns replaced by `*`.
+    a. For a list of real-world example UDFs, please refer to: *[masking-examples](./masking-examples/)*. <br>
 
 
-  1. **Test the UDF with the same and different users:**
+ 3. PostgreSQL does not easily allow cross-database references. As a result, user-defined functions **must be individually installed** in each database where you want to use them.
+
+
+
+
+#### Testing the UDF
+We can easily test the newly created UDF by connecting to the database with your favorite application and executing the following queries:
 ```SQL
 # Retrieving data without masking
 finance=> SELECT name from CompBandTable LIMIT 3;
@@ -120,7 +105,10 @@ finance=> SELECT name from CompBandTable LIMIT 3;
  Sophie
  Sylvester
 (3 rows)
+```
 
+<br> and <br>
+```SQL
 # Retrieving data masked with the newly installed UDF
 finance=> SELECT cyral.mask_string(name) from CompBandTable LIMIT 3;
  mask_string 
@@ -131,12 +119,6 @@ finance=> SELECT cyral.mask_string(name) from CompBandTable LIMIT 3;
 (3 rows)
 
 ```
-
-  #### Notes
-
-
-  * PostgreSQL does not easily allow cross-database references. As a result, user-defined functions **must be individually installed** in each database where you want to use them.
-
 
 
   ---
