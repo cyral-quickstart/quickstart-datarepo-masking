@@ -76,10 +76,10 @@ The above script can be saved to a file, e.g. `example-udf-postgresql.sql`, and 
 
 `psql -h ${SIDECAR_HOST} -p 5432 -d ${DATABASE} -U ${USER} -f ./example-udf-postgresql.sql`
 
-where:
-    - `SIDECAR_HOST` points to the sidecar being used to protect your PostgreSQL database. 
-    - `DATABASE` refers to the underlying database entity, which contains a collection of schemas and tables.
-    - `USER` is the specific database user, which has the the required permissions to executed the above SQL commands.
+where: <br>
+    - `SIDECAR_HOST` points to the sidecar being used to protect your PostgreSQL database. <br>
+    - `DATABASE` refers to the underlying database entity, which contains a collection of schemas and tables. <br>
+    - `USER` is the specific database user, which has the the required permissions to executed the above SQL commands. <br>
 
 
 #### Notes

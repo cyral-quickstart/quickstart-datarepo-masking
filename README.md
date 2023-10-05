@@ -43,10 +43,10 @@ The diagram above illustrates these possible workflows. Different users execute 
 ### Installing and Using User-Defined Functions
 
 User-defined functions are usually installed within a database/schema entity inside your Database system. Users can refer to these functions in their query by specifying the function name, with an optional schema/database qualifier. 
+* **To get more details on how to install and use UDFs, please refer to**: <br>[UDF Installation guides](./install-instructions).
 
-**To get more details on how to install and use UDFs, please refer to**: [INSTALLING-UDFs.md](./INSTALLING-UDFs.md).
 
-**To get more details on how to refer to UDFs in your Cyral Policies, please refer to**: [USING-UDFs-IN-POLICIES.md](./USING-UDFs-IN-POLICIES.md).
+* **To get more details on how to refer to UDFs in your Cyral Policies, please refer to**: <br> [Policy construction guide](./to-od).
 
 <br><br>
 ### Example Masking Functions
