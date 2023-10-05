@@ -90,6 +90,10 @@ To install it, you can save it to a file, for example `mask_string.sql`, and run
 The expected output from the server is: 
 `CREATE FUNCTION`
 
+
+> *To a list of real-world example UDFs, please refer to: [masking-examples](./masking-examples/)*.
+
+
 <br>
 
 
@@ -99,10 +103,11 @@ GRANT EXECUTE ON FUNCTION cyral.mask_string(text) TO PUBLIC;
 ```
 On **PostgreSQL**, we can grant permissions to everyone by granting the desired priviledge to the `PUBLIC` role.
 
+
 <br>
 
 
-  5. **Test the UDF with the same and different users:**
+  1. **Test the UDF with the same and different users:**
 ```SQL
 # Retrieving data without masking
 finance=> SELECT name from CompBandTable LIMIT 3;
