@@ -28,7 +28,7 @@ This guide provides the required information on how to install user defined func
 
 Click on the desirable Database System below to see specific requirements and commands:
 
-<detailsx>
+<details>
   <summary>
     <picture><img src="../.github/imgs/databases/postgresql-name.png" alt="PostgreSQL" height="45"></picture>
   </summary>
