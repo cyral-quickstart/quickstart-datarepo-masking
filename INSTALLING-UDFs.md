@@ -49,15 +49,18 @@ Type "help" for help.
 
 finance=> 
 ```
-`finance` is the name of our database entity inside this PostgreSQL instance. <br>
+`finance` is the name of our database entity inside this PostgreSQL instance. 
+
+<br>
 
   2. **Optionally, create a new schema for storing all your user-defined functions:**
 ```
 finance=> create schema if not exists cyral;
 CREATE SCHEMA
 ```
-`cyral` is the name for the new schema we created. It could be any other name of your choice.
-It's not mandatory to create a new schema. However, it is recommended to have a dedicated schema for organizing all of your functions, as it facilitates when writing Cyral Policies that refer to them.
+`cyral` is the name for the new schema created with the above command. You, as an admin, are free to choose the schema of your choice, however it's advised to review the '[installing UDFs in a centralized location](./CONTRIBUTING.md)' section to understand the impact of the schema used in Cyral policies.
+
+<br>
 
   3. **Create the user defined function for transforming the desirable data:**
 ```SQL
@@ -87,12 +90,17 @@ To install it, you can save it to a file, for example `mask_string.sql`, and run
 The expected output from the server is: 
 `CREATE FUNCTION`
 
+<br>
+
 
   4. **Grant execute permissions for all users on this function:**
 ```SQL
 GRANT EXECUTE ON FUNCTION cyral.mask_string(text) TO PUBLIC;
 ```
 On **PostgreSQL**, we can grant permissions to everyone by granting the desired priviledge to the `PUBLIC` role.
+
+<br>
+
 
   5. **Test the UDF with the same and different users:**
 ```SQL
