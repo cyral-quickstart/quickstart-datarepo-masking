@@ -209,9 +209,165 @@ finance=> SELECT name from CompBandTable LIMIT 3;
   </summary>
 
 
+  #### Required permissions for installing UDFs
+  The database user used to install the UDFs needs the following privileges:
+  * `CREATE DATABASE` on the target database.
+    * [Command reference.](https://docs.snowflake.com/en/sql-reference/sql/create-database)
+  * `CREATE SCHEMA` on the target database.
+    * [Command reference.](https://docs.snowflake.com/en/sql-reference/sql/create-schema)
+  * `GRANT`, to allow grant usage to different users. 
+    * [Command reference.](https://docs.snowflake.com/en/sql-reference/sql/grant-privilege)
+
+  #### Install script
+
+```sql
+// 1. Create a new (optional) database for storing all your UDFs for custom masking
+CREATE DATABASE IF NOT EXISTS cyral;
+
+// 2. Allow everyone to access the new database
+GRANT USAGE ON DATABASE cyral TO PUBLIC;
+
+// 3. Create a new schema for holding the UDFs
+CREATE SCHEMA IF NOT EXISTS cyral.cyral;
+
+// 4. Allow everyone to access the new schema
+GRANT USAGE ON SCHEMA cyral.cyral TO PUBLIC;
+
+// 5. Create the new function in the target schema
+CREATE OR REPLACE FUNCTION cyral.cyral.MASK_STRING(INPUT_STRING STRING)
+  RETURNS STRING
+  LANGUAGE JAVASCRIPT
+AS
+$$
+function maskString(inputString) {
+    var maskedString = '';
+    for (var i = 0; i < inputString.length; i++) {
+        maskedString += '*';
+    }
+    return maskedString;
+}
+
+return maskString(INPUT_STRING);
+$$;
+
+
+// 6. Grant the execution privilege to everyone, through the PUBLIC role
+GRANT USAGE ON FUNCTION cyral.cyral.MASK_STRING(STRING) TO PUBLIC;
+
 ```
-    TODO
+
+The above script can be saved to a file, e.g. `example-udf-snowflake.sql`, and can be copied as is and executed in your application of choice. In `snowsql`, it can be installed with the following command: <br>
+
+`snowsql -a ${SNOWFLAKE_ACCOUNT} -u ${USER} -h ${SIDECAR_ENDPOINT} -p 443 -w ${WAREHOUSE} -f  ./example-udf-snowflake.sql`
+
+where: <br>
+    - `SNOWFLAKE_ACCOUNT` refers to the snowflake account ID. <br>
+    - `SIDECAR_HOST` points to the sidecar being used to protect your Snowflake instance. <br>
+    - `DATABASE` refers to the underlying database entity, which contains a collection of schemas and tables. <br>
+    - `USER` is the specific database user, which has the the required permissions to executed the above SQL commands. <br>
+    - `WAREHOUSE` is the Snowflake Warehouse to be used. <br>
+
+
+#### Notes
+ 1. The above script creates new optional database and schema, both named `cyral`. Any other database and schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#add-section) for a complete understanding on how the database and schema name impacts on how you refer to UDFs in policies.
+
+ 2. Above we have a simplistic UDF example that receives a column entry of type `string` and returns another `string` value with all characters of the input columns replaced by `*`.
+    **For a list of real-world example UDFs, please refer to: [masking-examples](./masking-examples/)**. <br>
+
+
+ 3. Snowflake supports cross-database references. As a result, user-defined functions can be created once and shared across all your available databases.
+
+
+
+
+#### Testing the UDF directly
+We can easily test the newly created UDF by connecting to the database with your favorite application and executing the following queries:
+```SQL
+# Retrieving data without masking
+COMPUTE_WH@PLAYGROUND.FINANCE> SELECT CARD_FAMILY FROM CARDS LIMIT 2;
++-------------+                                                                 
+| CARD_FAMILY |
+|-------------|
+| Gold        |
+| Platinum    |
++-------------+
+2 Row(s) produced. Time Elapsed: 0.253s
+
 ```
+
+and <br>
+```SQL
+# Retrieving data masked with the newly installed UDF
+COMPUTE_WH@PLAYGROUND.FINANCE> SELECT CYRAL.CYRAL.MASK_STRING(CARD_FAMILY) FROM CARDS LIMIT 2;
++--------------------------------------+                                        
+| CYRAL.CYRAL.MASK_STRING(CARD_FAMILY) |
+|--------------------------------------|
+| ****                                 |
+| ********                             |
++--------------------------------------+
+2 Row(s) produced. Time Elapsed: 0.854s
+
+```
+
+
+#### Testing the UDF with Cyral Policies
+
+Here we assume the following:
+  * A PostgreSQL data repository was already created in the Control Plane / Management Console.
+  * The data repository has the masking policy enforcement option enabled.
+  * The data repository has the appropriate Data Labels already configured.
+  * The data repository is accessible through a sidecar.
+
+If the above pre-conditions are not met, or your need further help in configuring them, please refer to:<br>
+* Cyral Docs :arrow_right: [Track repositories](https://cyral.com/docs/manage-repositories/repo-track).
+* Cyral Docs :arrow_right: [Data Mapping](https://cyral.com/docs/policy/datamap).
+* Cyral Docs :arrow_right: [Turning on masking for a repository](https://cyral.com/docs/using-cyral/masking/#turn-on-masking-for-the-repository-in-cyral).
+* Cyral Docs :arrow_right: [Binding a repository to a sidecar](https://cyral.com/docs/sidecars/sidecar-bind-repo).
+
+##### Example Global Policy that refers to the custom function
+
+```yaml
+data:
+  - CARD_FAMILY
+rules:
+  - reads:
+      - data:
+          - custom:cyral.cyral.mask_string(CARD_FAMILY)
+        rows: any
+        severity: low
+```
+
+when the UDF is installed inside the [pre-defined schema names](#to-add), the schema prefix can be omitted in the policy definition, leading to the following alternative policy:
+
+```yaml
+data:
+  - CARD_FAMILY
+rules:
+  - reads:
+      - data:
+          - custom:mask_string(CARD_FAMILY)
+        rows: any
+        severity: low
+```
+
+##### Connecting and retrieving data
+```sql
+// Every query that retrieves the contents of the field `CARD_FAMILY` will have the result payload masked
+//
+// Note that the end-user is not expected to type the UDF name in their queries, and in fact, they
+// are not even expected to be aware that such UDF exist.
+
+COMPUTE_WH@PLAYGROUND.FINANCE> SELECT CARD_FAMILY FROM CARDS LIMIT 2;
++--------------------------------------+                                        
+| CYRAL.CYRAL.MASK_STRING(CARD_FAMILY) |
+|--------------------------------------|
+| ****                                 |
+| ********                             |
++--------------------------------------+
+2 Row(s) produced. Time Elapsed: 0.921s
+
+```
+
 
   ---
 </details>
