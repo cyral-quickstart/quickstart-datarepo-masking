@@ -84,16 +84,13 @@ The above script can be saved to a file, e.g. `example-udf-postgresql.sql`, and 
 where: <br>
     - `SIDECAR_HOST` points to the sidecar being used to protect your PostgreSQL database. <br>
     - `DATABASE` refers to the underlying database entity, which contains a collection of schemas and tables. <br>
-    - `USER` is the specific database user, which has the the required permissions to executed the above SQL commands. <br>
+    - `USER` is the specific database user, which has the required permissions to execute the above SQL commands. <br>
 
 
 #### Notes
- 1. The above script creates a new optional schema, named `cyral`. Any other schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#add-section) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
-
- 2. Above we have a simplistic UDF example that receives a column entry of type `text` and returns another `text` value with all characters of the input columns replaced by `*`.
-    **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
-
- 3. PostgreSQL does not easily allow cross-database references. As a result, user-defined functions **must be individually installed** in each database where you want to use them.
+1. The above script creates a new optional schema, named `cyral`. Any other schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#add-section) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
+2. Above we have a simplistic UDF example that receives a column entry of type `text` and returns another `text` value with all characters of the input columns replaced by `*`. **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
+3. PostgreSQL does not easily allow cross-database references. As a result, user-defined functions **must be individually installed** in each database where you want to use them.
 
 
 
@@ -269,18 +266,14 @@ where: <br>
     - `SNOWFLAKE_ACCOUNT` refers to the snowflake account ID. <br>
     - `SIDECAR_HOST` points to the sidecar being used to protect your Snowflake instance. <br>
     - `DATABASE` refers to the underlying database entity, which contains a collection of schemas and tables. <br>
-    - `USER` is the specific database user, which has the the required permissions to executed the above SQL commands. <br>
+    - `USER` is the specific database user, which has the required permissions to execute the above SQL commands. <br>
     - `WAREHOUSE` is the Snowflake Warehouse to be used. <br>
 
 
-#### Notes  
- 1. The above script creates new optional database and schema, both named `cyral`. Any other database and schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#add-section) for a complete understanding on how the database and schema name impacts on how you refer to UDFs in policies.
-
- 2. Above we have a simplistic UDF example that receives a column entry of type `string` and returns another `string` value with all characters of the input columns replaced by `*`.
-    **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**. <br>
-
-
- 3. Snowflake supports cross-database references. As a result, user-defined functions can be created once and shared across all your available databases.
+#### Notes
+1. The above script creates new database and schema, both named `CYRAL`. Any other database and schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#add-section) for a complete understanding on how the database and schema name impacts on how you refer to UDFs in policies.
+2. Above we have a simplistic UDF example that receives a column entry of type `string` and returns another `string` value with all characters of the input columns replaced by `*`. **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
+3. Snowflake supports cross-database references. As a result, user-defined functions can be created once and shared across all your available databases.
 
 
 
@@ -318,7 +311,7 @@ COMPUTE_WH@PLAYGROUND.FINANCE> SELECT CYRAL.CYRAL."mask_string"(CARD_FAMILY) FRO
 #### Testing the UDF with Cyral Policies
 
 Here we assume the following:
-  * A PostgreSQL data repository was already created in the Control Plane / Management Console.
+  * A Snowflake data repository was already created in the Control Plane / Management Console.
   * The data repository has the masking policy enforcement option enabled.
   * The data repository has the appropriate Data Labels already configured.
   * The data repository is accessible through a sidecar.
@@ -407,12 +400,157 @@ rules:
      <picture><img src="../.github/imgs/databases/sqlserver-name.png" alt="SQL Server" height="45"></picture>
   </summary>
 
+#### Required permissions for installing UDFs
+The database user used to install the UDFs needs the following privileges:
+* `CREATE DATABASE`
+  * [Command reference.](https://learn.microsoft.com/pt-br/sql/t-sql/statements/create-database-transact-sql)
+* `CREATE SCHEMA` on the target database.
+  * [Command reference.](https://learn.microsoft.com/en-us/sql/relational-databases/security/authentication-access/create-a-database-schema)
+* `GRANT`, to allow grant usage to different users. 
+  * [Command reference.](https://learn.microsoft.com/pt-br/sql/t-sql/statements/grant-transact-sql)
+
+#### Install script
+
+```sql
+-- 1. Create a new database and schema for storing the desired UDFs:
+-- 1. Create a new database and schema for storing the desired UDFs:
+CREATE DATABASE cyral;
+GO
+USE cyral;
+GO
+CREATE SCHEMA cyral;
+GO
+
+-- 2. Create the new function in the target schema:
+CREATE OR ALTER FUNCTION cyral.mask_string(@input_string NVARCHAR(MAX))
+RETURNS NVARCHAR(MAX)
+AS
+BEGIN
+    DECLARE @masked_string NVARCHAR(MAX) = '';
+    DECLARE @i INT = 1;
+
+    -- Iterate through each character of the input string and replace with '*'
+    WHILE @i <= LEN(@input_string)
+    BEGIN
+        SET @masked_string = @masked_string + '*';
+        SET @i = @i + 1;
+    END;
+
+    -- Return the masked string
+    RETURN @masked_string;
+END;
+GO
+
+-- 3. Grant the execution privilege to everyone, through the PUBLIC role
+GRANT CONNECT TO PUBLIC;
+GRANT EXECUTE ON OBJECT::cyral.mask_string TO PUBLIC;
+```
+
+The above script can be saved to a file, e.g. `example-udf-sqlserver.sql`, and can be copied as is and executed in your application of choice. In `sqlcmd`, it can be installed with the following command:
 
 ```
-    TODO
+sqlcmd -C -S ${SIDECAR_HOST},${SIDECAR_PORT} -U ${USER} -i example-udf-sqlserver.sql
 ```
 
-  ---
+where:
+- `SIDECAR_HOST` and `SIDECAR_PORT` point to the sidecar being used to protect your SQL Server database.
+- `USER` is the specific database user, which has the required permissions to execute the above SQL commands.
+
+
+#### Notes
+1. The above script creates new database and schema, both named `cyral`. Any other database and schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#add-section) for a complete understanding on how the database and schema name impacts on how you refer to UDFs in policies.
+2. Above we have a simplistic UDF example that receives a column entry of type `NVARCHAR` and returns another `NVARCHAR` value with all characters of the input columns replaced by `*`. **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
+3. SQL Server supports cross-database references. As a result, user-defined functions can be created once and shared across all your available databases.
+
+#### Testing the UDF directly
+We can easily test the newly created UDF by connecting to the database with your favorite application and executing the following queries:
+```SQL
+1> SELECT name FROM band.comp_band_table;
+2> GO
+name
+----------------------------
+James
+Sophie
+Sylvester
+
+(3 rows affected)
+```
+and
+```SQL
+# Retrieving data masked with the newly installed UDF
+1> SELECT cyral.cyral.mask_string(name) FROM band.comp_band_table;
+2> GO
+----------------------------
+*****
+******
+*********
+
+(3 rows affected)
+```
+
+#### Testing the UDF with Cyral Policies
+
+Here we assume the following:
+  * A Oracle data repository was already created in the Control Plane / Management Console.
+  * The data repository has the masking policy enforcement option enabled.
+  * The data repository has the appropriate Data Labels already configured.
+  * The data repository is accessible through a sidecar.
+
+If the above pre-conditions are not met, or your need further help in configuring them, please refer to:
+* Cyral Docs :arrow_right: [Track repositories](https://cyral.com/docs/manage-repositories/repo-track).
+* Cyral Docs :arrow_right: [Data Mapping](https://cyral.com/docs/policy/datamap).
+* Cyral Docs :arrow_right: [Turning on masking for a repository](https://cyral.com/docs/using-cyral/masking/#turn-on-masking-for-the-repository-in-cyral).
+* Cyral Docs :arrow_right: [Binding a repository to a sidecar](https://cyral.com/docs/sidecars/sidecar-bind-repo).
+
+##### Example Global Policy that refers to the custom function
+
+```yaml
+data:
+  - NAMES
+rules:
+  - reads:
+      - data:
+          - custom:mask_string(NAMES)
+        rows: any
+        severity: low
+```
+
+##### Connecting and retrieving data
+```sql
+# Every query that retrieves the contents of the field `name` will have the result payload masked
+#
+# Note that the end-user is not expected to type the UDF name in their queries, and in fact, they
+# are not even expected to be aware that such UDF exists.
+1> SELECT name FROM band.comp_band_table;
+2> GO
+name
+----------------------------
+*****
+******
+*********
+
+(3 rows affected)
+```
+
+In the example above, the policy only refers to the UDF by its name. This is valid because in SQL Server, both database and schema `cyral` have a special meaning for the sidecar, as it is the default location where the sidecar looks for functions, when they are not fully qualified. This behavior allows for the use of a single Global Policy for different databases or repository types.
+
+However, it is possible to install UDFs in any other database or schema, as long as Global Policies refer to them using qualified names. For the above example, a fully qualified table
+reference would be:
+
+```yaml
+data:
+  - NAMES
+rules:
+  - reads:
+      - data:
+          - custom:cyral.cyral.mask_string(NAMES)
+        rows: any
+        severity: low
+```
+
+* note the `cyral.cyral.` prefix, which denotes the database and schema name.
+
+---
 </details>
 <br>
 
@@ -469,10 +607,8 @@ Grant succeeded.
 ```
 
 #### Notes
- 1. The above script creates a new user schema, named `CYRAL`. Any other schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#add-section) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
-
- 2. Above we have a simplistic UDF example that receives a column entry of type `VARCHAR` and returns another `VARCHAR` value with all characters of the input columns replaced by `*`.
-    **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
+1. The above script creates a new user schema, named `CYRAL`. Any other schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#add-section) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
+2. Above we have a simplistic UDF example that receives a column entry of type `VARCHAR` and returns another `VARCHAR` value with all characters of the input columns replaced by `*`. **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
 
 
 #### Testing the UDF directly
@@ -502,7 +638,7 @@ CYRAL."mask_string"(NAME)
 #### Testing the UDF with Cyral Policies
 
 Here we assume the following:
-  * A Oracle data repository was already created in the Control Plane / Management Console.
+  * An Oracle data repository was already created in the Control Plane / Management Console.
   * The data repository has the masking policy enforcement option enabled.
   * The data repository has the appropriate Data Labels already configured.
   * The data repository is accessible through a sidecar.
@@ -542,20 +678,23 @@ NAME
 
 ```
 
-In the example above, the policy only refers to the UDF by its name, with this `CYRAL` user schema is taken by default as UDF install location. This option allows the use of a single global policy for different databases or repository types.
+In the example above, the policy only refers to the UDF by its name. This is valid because in Oracle, the user schema `CYRAL` has a special meaning for the sidecar, as it is the default location where the sidecar looks for functions, when they are not fully qualified. This behavior allows for the use of a single Global Policy for different databases or repository types.
 
-However, it's possible to install the UDF anywhere, as long as the global policy refers to it using qualified names. Assuming the sample script above and a different user schema `BAND` to install the UDF instead of `CYRAL`, please follow these steps:
-1. Replace all occurrences of `CYRAL` by `BAND` in the sample script.
-2. Adjust the policy to use a qualified custom UDF reference:
+However, it is possible to install UDFs in any other schema, as long as Global Policies refer to them using qualified names. For the above example, a fully qualified table
+reference would be:
+
 ```yaml
 data:
   - NAMES
 rules:
   - reads:
       - data:
-          - custom:BAND.mask_string(NAMES)
+          - custom:CYRAL.mask_string(NAMES)
         rows: any
         severity: low
 ```
+
+* note the `CYRAL.` prefix, which denotes the user schema name.
+
 ---
 </details>
