@@ -421,11 +421,16 @@ The database user used to install the UDFs needs the following privileges:
 
 #### Install script
 
-[comment]: <> ( Helper commands: )
-[comment]: <> (  - Docker run: docker run -p 1521:1521 -v /<some_path>/e2e-tests/compose/start_oracle:/usr/local/etc/start_oracle:ro --name oracle21 gcr.io/cyral-dev/oracle-21-base )
-[comment]: <> (  - Docker bash: docker exec -it oracle21 bash )
-[comment]: <> (  - Connect as admin: sqlplus SYS/Password123@//localhost:1521/XEPDB1 AS SYSDBA )
-[comment]: <> (  - Grant login permission: GRANT CREATE SESSION TO <user_schema>; )
+[comment]: <> ( Docker run: docker run -p 1521:1521 -v /<some_path>/e2e-tests/compose/start_oracle:/usr/local/etc/start_oracle:ro --name oracle21 gcr.io/cyral-dev/oracle-21-base )
+[comment]: <> ( Docker bash: docker exec -it oracle21 bash )
+[comment]: <> ( Connect as admin: sqlplus SYS/Password123@//localhost:1521/XEPDB1 AS SYSDBA )
+[comment]: <> ( CREATE TABLE COMP_BAND_TABLE (NAME VARCHAR(50) NOT NULL); )
+[comment]: <> ( INSERT INTO COMP_BAND_TABLE (NAME) VALUES ('James'); )
+[comment]: <> ( INSERT INTO COMP_BAND_TABLE (NAME) VALUES ('Sophie'); )
+[comment]: <> ( INSERT INTO COMP_BAND_TABLE (NAME) VALUES ('Sylvester'); )
+[comment]: <> ( SELECT NAME FROM COMP_BAND_TABLE; )
+[comment]: <> ( Grant login permission: GRANT CREATE SESSION TO <user_schema>; )
+
 
 ```sql
 -- 1. Create a new user schema for storing the desired UDFs:
