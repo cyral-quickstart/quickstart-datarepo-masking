@@ -147,19 +147,6 @@ data:
 rules:
   - reads:
       - data:
-          - custom:cyral.mask_string(NAMES)
-        rows: any
-        severity: low
-```
-
-when the UDF is installed inside the [pre-defined schema names](#to-add), the schema prefix can be omitted in the policy definition, leading to the following alternative policy:
-
-```yaml
-data:
-  - NAMES
-rules:
-  - reads:
-      - data:
           - custom:mask_string(NAMES)
         rows: any
         severity: low
@@ -179,6 +166,25 @@ finance=> SELECT name from CompBandTable LIMIT 3;
  *********
 (3 rows)
 ```
+
+
+In the example above, the policy only refers to the UDF by its name. This is valid because in PostgreSQL, the schema `cyral` has a special meaning for the sidecar, as it is the default location where the sidecar looks for functions, when they are not fully qualified. This behavior allows for the use of a single Global Policy for different databases or repository types.
+
+However, it is possible to install UDFs in any other schema, as long as Global Policies refer to them using qualified names. For the above example, a fully qualified table
+reference would be:
+
+```yaml
+data:
+  - NAMES
+rules:
+  - reads:
+      - data:
+          - custom:cyral.mask_string(NAMES)
+        rows: any
+        severity: low
+```
+
+* note the `cyral.` prefix, which denotes the schema name.
 
   ---
 </details>
@@ -331,19 +337,6 @@ data:
 rules:
   - reads:
       - data:
-          - custom:CYRAL.CYRAL.mask_string(CARD_FAMILY)
-        rows: any
-        severity: low
-```
-
-when the UDF is installed inside the [pre-defined schema names](#to-add), the schema prefix can be omitted in the policy definition, leading to the following alternative policy:
-
-```yaml
-data:
-  - CARD_FAMILY
-rules:
-  - reads:
-      - data:
           - custom:mask_string(CARD_FAMILY)
         rows: any
         severity: low
@@ -367,6 +360,24 @@ COMPUTE_WH@PLAYGROUND.FINANCE> SELECT CARD_FAMILY FROM CARDS LIMIT 2;
 
 ```
 
+
+In the example above, the policy only refers to the UDF by its name. This is valid because in Snowflake, the database and schema named `CYRAL` has special meanings for the sidecar, as it is the default location where the sidecar looks for unqualified functions. This behavior allows for the use of a single Global Policy for different databases or repository types.
+
+However, it is possible to install UDFs in any other schema, as long as Global Policies refer to them using qualified names. For the above example, a fully qualified table
+reference would be:
+
+```yaml
+data:
+  - NAMES
+rules:
+  - reads:
+      - data:
+          - custom:CYRAL.CYRAL.mask_string(CARD_FAMILY)
+        rows: any
+        severity: low
+```
+
+* note the `CYRAL.CYRAL` prefix, which denotes the database and the schema names.
 
   ---
 </details>
