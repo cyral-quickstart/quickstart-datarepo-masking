@@ -91,8 +91,7 @@ where: <br>
  1. The above script creates a new optional schema, named `cyral`. Any other schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#add-section) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
 
  2. Above we have a simplistic UDF example that receives a column entry of type `text` and returns another `text` value with all characters of the input columns replaced by `*`.
-    **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**. <br>
-
+    **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
 
  3. PostgreSQL does not easily allow cross-database references. As a result, user-defined functions **must be individually installed** in each database where you want to use them.
 
