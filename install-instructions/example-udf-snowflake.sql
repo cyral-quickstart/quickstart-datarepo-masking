@@ -1,4 +1,4 @@
-// 1. Create a new (optional) database for storing all your UDFs for custom masking
+// 1. Create a new database for storing all your UDFs for custom masking
 CREATE DATABASE IF NOT EXISTS CYRAL;
 
 // 2. Allow everyone to access the new database
