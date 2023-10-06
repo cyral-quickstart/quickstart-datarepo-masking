@@ -211,7 +211,7 @@ finance=> SELECT name from CompBandTable LIMIT 3;
 
   #### Required permissions for installing UDFs
   The database user used to install the UDFs needs the following privileges:
-  * `CREATE DATABASE` on the target database.
+  * `CREATE DATABASE` on the target Snowflake warehouse.
     * [Command reference.](https://docs.snowflake.com/en/sql-reference/sql/create-database)
   * `CREATE SCHEMA` on the target database.
     * [Command reference.](https://docs.snowflake.com/en/sql-reference/sql/create-schema)
@@ -222,19 +222,19 @@ finance=> SELECT name from CompBandTable LIMIT 3;
 
 ```sql
 // 1. Create a new (optional) database for storing all your UDFs for custom masking
-CREATE DATABASE IF NOT EXISTS cyral;
+CREATE DATABASE IF NOT EXISTS CYRAL;
 
 // 2. Allow everyone to access the new database
-GRANT USAGE ON DATABASE cyral TO PUBLIC;
+GRANT USAGE ON DATABASE CYRAL TO PUBLIC;
 
 // 3. Create a new schema for holding the UDFs
-CREATE SCHEMA IF NOT EXISTS cyral.cyral;
+CREATE SCHEMA IF NOT EXISTS CYRAL.CYRAL;
 
 // 4. Allow everyone to access the new schema
-GRANT USAGE ON SCHEMA cyral.cyral TO PUBLIC;
+GRANT USAGE ON SCHEMA CYRAL.CYRAL TO PUBLIC;
 
 // 5. Create the new function in the target schema
-CREATE OR REPLACE FUNCTION cyral.cyral.MASK_STRING(INPUT_STRING STRING)
+CREATE OR REPLACE FUNCTION CYRAL.CYRAL."mask_string"(INPUT_STRING STRING)
   RETURNS STRING
   LANGUAGE JAVASCRIPT
 AS
@@ -252,7 +252,7 @@ $$;
 
 
 // 6. Grant the execution privilege to everyone, through the PUBLIC role
-GRANT USAGE ON FUNCTION cyral.cyral.MASK_STRING(STRING) TO PUBLIC;
+GRANT USAGE ON FUNCTION CYRAL.CYRAL."mask_string"(STRING) TO PUBLIC;
 
 ```
 
@@ -268,7 +268,7 @@ where: <br>
     - `WAREHOUSE` is the Snowflake Warehouse to be used. <br>
 
 
-#### Notes
+#### Notes  
  1. The above script creates new optional database and schema, both named `cyral`. Any other database and schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#add-section) for a complete understanding on how the database and schema name impacts on how you refer to UDFs in policies.
 
  2. Above we have a simplistic UDF example that receives a column entry of type `string` and returns another `string` value with all characters of the input columns replaced by `*`.
@@ -298,9 +298,9 @@ COMPUTE_WH@PLAYGROUND.FINANCE> SELECT CARD_FAMILY FROM CARDS LIMIT 2;
 and <br>
 ```SQL
 # Retrieving data masked with the newly installed UDF
-COMPUTE_WH@PLAYGROUND.FINANCE> SELECT CYRAL.CYRAL.MASK_STRING(CARD_FAMILY) FROM CARDS LIMIT 2;
+COMPUTE_WH@PLAYGROUND.FINANCE> SELECT CYRAL.CYRAL."mask_string"(CARD_FAMILY) FROM CARDS LIMIT 2;
 +--------------------------------------+                                        
-| CYRAL.CYRAL.MASK_STRING(CARD_FAMILY) |
+| CYRAL.CYRAL.mask_string(CARD_FAMILY) |
 |--------------------------------------|
 | ****                                 |
 | ********                             |
@@ -332,7 +332,7 @@ data:
 rules:
   - reads:
       - data:
-          - custom:cyral.cyral.mask_string(CARD_FAMILY)
+          - custom:CYRAL.CYRAL.mask_string(CARD_FAMILY)
         rows: any
         severity: low
 ```
@@ -359,7 +359,7 @@ rules:
 
 COMPUTE_WH@PLAYGROUND.FINANCE> SELECT CARD_FAMILY FROM CARDS LIMIT 2;
 +--------------------------------------+                                        
-| CYRAL.CYRAL.MASK_STRING(CARD_FAMILY) |
+| CYRAL.CYRAL.mask_string(CARD_FAMILY) |
 |--------------------------------------|
 | ****                                 |
 | ********                             |
