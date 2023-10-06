@@ -421,23 +421,12 @@ The database user used to install the UDFs needs the following privileges:
 
 #### Install script
 
-[comment]: <> ( Docker run: docker run -p 1521:1521 -v /<some_path>/e2e-tests/compose/start_oracle:/usr/local/etc/start_oracle:ro --name oracle21 gcr.io/cyral-dev/oracle-21-base )
-[comment]: <> ( Docker bash: docker exec -it oracle21 bash )
-[comment]: <> ( Connect as admin: sqlplus SYS/Password123@//localhost:1521/XEPDB1 AS SYSDBA )
-[comment]: <> ( CREATE TABLE COMP_BAND_TABLE (NAME VARCHAR(50) NOT NULL); )
-[comment]: <> ( INSERT INTO COMP_BAND_TABLE (NAME) VALUES ('James'); )
-[comment]: <> ( INSERT INTO COMP_BAND_TABLE (NAME) VALUES ('Sophie'); )
-[comment]: <> ( INSERT INTO COMP_BAND_TABLE (NAME) VALUES ('Sylvester'); )
-[comment]: <> ( SELECT NAME FROM COMP_BAND_TABLE; )
-[comment]: <> ( Grant login permission: GRANT CREATE SESSION TO <user_schema>; )
-
-
 ```sql
 -- 1. Create a new user schema for storing the desired UDFs:
 CREATE USER CYRAL identified by "<password>";
 
 -- 2. Create the new function in the target schema:
-CREATE OR REPLACE FUNCTION CYRAL.MASK_STRING(
+CREATE OR REPLACE FUNCTION CYRAL."mask_string"(
   INPUT_STRING IN VARCHAR2
 )
 RETURN VARCHAR2
@@ -454,13 +443,13 @@ END;
 /
 
 -- 3. Grant the execution privilege to everyone, through the PUBLIC role
-GRANT ALL PRIVILEGES ON CYRAL.MASK_STRING TO PUBLIC;
+GRANT ALL PRIVILEGES ON CYRAL."mask_string" TO PUBLIC;
 ```
 
 The above script can be saved to a file, e.g. `example-udf-oracle.sql`, and can be copied as is and executed in your application of choice. In `sqlplus`, considering you are already connected, it can be installed with the following command:
 
 ```
-SQL> @/masking/script.sql 
+SQL> @example-udf-oracle.sql
 
 User created.
 
@@ -491,9 +480,9 @@ Sylvester
 and
 ```SQL
 # Retrieving data masked with the newly installed UDF
-SQL> SELECT CYRAL.MASK_STRING(NAME) FROM COMP_BAND_TABLE;
+SQL> SELECT CYRAL."mask_string"(NAME) FROM COMP_BAND_TABLE;
 
-CYRAL.MASK_STRING(NAME)
+CYRAL."mask_string"(NAME)
 ----------------------------
 *****
 ******
@@ -522,7 +511,7 @@ data:
 rules:
   - reads:
       - data:
-          - custom:MASK_STRING(NAMES)
+          - custom:mask_string(NAMES)
         rows: any
         severity: low
 ```
@@ -554,7 +543,7 @@ data:
 rules:
   - reads:
       - data:
-          - custom:BAND.MASK_STRING(NAMES)
+          - custom:BAND.mask_string(NAMES)
         rows: any
         severity: low
 ```
