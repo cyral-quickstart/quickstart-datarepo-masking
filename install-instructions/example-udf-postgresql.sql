@@ -1,4 +1,4 @@
-# 1. Create a new (optional) schema for storing the desired UDFs:
+# 1. Create a new schema for storing the desired UDFs:
 
 CREATE SCHEMA IF NOT EXISTS cyral;
 

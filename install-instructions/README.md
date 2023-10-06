@@ -45,7 +45,7 @@ Click on the desirable Database System below to see specific requirements and co
   #### Install script
 
 ```sql
-# 1. Create a new (optional) schema for storing the desired UDFs:
+# 1. Create a new schema for storing the desired UDFs:
 
 CREATE SCHEMA IF NOT EXISTS cyral;
 
@@ -226,7 +226,7 @@ rules:
   #### Install script
 
 ```sql
-// 1. Create a new (optional) database for storing all your UDFs for custom masking
+// 1. Create a new database for storing all your UDFs for custom masking
 CREATE DATABASE IF NOT EXISTS CYRAL;
 
 // 2. Allow everyone to access the new database
