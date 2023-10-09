@@ -20,7 +20,7 @@ Installation
 
 This directory contains two `.sql` files for each supported repo type:
 * `${repo_type}-complete-script.sql`
-  * Contains a complete installation script that can be used to install the UDF in your desired database. It also include codes to create the required *database, schema, and functions*, and also grants the required permissions to allow all users to execute the function. Default database and schema names are assumed in these scripts.
+  * Contains a complete installation script that can be used to install the UDF in your desired database. It also includes codes to create the required *database, schema, and functions*, and also grants the required permissions to allow all users to execute the function. Default database and schema names are assumed in these scripts.
 * `${repo_type}-udf-only.sql`
   * Contains only the function code with some placeholders, in the format `${PLAHOLDER_NAME}`, which should be updated before installing the function.
 
