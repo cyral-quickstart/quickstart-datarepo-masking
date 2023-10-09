@@ -102,7 +102,7 @@ email
 oplaki.jsnns77@mmznoha.los
 popnshc.kkajx.82uaj@sujhzzs.ysh
 hhagbxpq@xpos.qlo
-*********
+ZaFxbcd517@dzbxq.pqd
 ```
 
 In the example above, the policy only refers to the UDF by its name. This is valid because the `${repo-type}-complete.sql` scripts install the functions in a default location known by the sidecar. Per repo type, these are the default locations:
