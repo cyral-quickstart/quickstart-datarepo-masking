@@ -194,9 +194,132 @@ rules:
      <picture><img src="../.github/imgs/databases/redshift-name.png" alt="Redshift" height="45"></picture>
   </summary>
 
+#### Required permissions for installing UDFs
+The database user used to install the UDFs needs the following privileges:
+* `CREATE SCHEMA` on the target database.
+  * [Command reference.](https://docs.aws.amazon.com/pt_br/redshift/latest/dg/r_CREATE_SCHEMA.html)
+* `GRANT`, to allow grant usage to different users. 
+  * [Command reference.](https://docs.aws.amazon.com/pt_br/redshift/latest/dg/r_GRANT.html)
+
+#### Install script
+
+```sql
+-- 1. Create a new schema for storing the desired UDFs:
+CREATE SCHEMA IF NOT EXISTS cyral;
+
+-- 2. Create the new function in the target schema:
+CREATE OR REPLACE FUNCTION cyral.mask_string(input_string TEXT)
+RETURNS TEXT
+STABLE
+AS
+$$
+  return '*' * len(input_string)
+$$ LANGUAGE plpythonu;
+
+-- 3. Grant the execution privilege to everyone, through the PUBLIC role
+GRANT EXECUTE ON FUNCTION cyral.mask_string(input_string TEXT) TO PUBLIC;
 ```
-    TODO
+
+The above script can be saved to a file, e.g. `example-udf-redshift.sql`, and can be copied as is and executed in your application of choice. In `psql`, it can be installed with the following command:
+
+`psql -h ${SIDECAR_HOST} -p ${SIDECAR_PORT} -d ${DATABASE} -U ${USER} -f ./example-udf-redshift.sql`
+
+where:
+- `SIDECAR_HOST` and `SIDECAR_PORT` point to the sidecar being used to protect your Redshift database.
+- `DATABASE` refers to the underlying database entity, which contains a collection of schemas and tables.
+- `USER` is the specific database user, which has the required permissions to execute the above SQL commands.
+
+
+#### Notes
+1. The above script creates a new schema, named `cyral`. Any other schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#add-section) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
+2. Above we have a simplistic UDF example that receives a column entry of type `TEXT` and returns another `TEXT` value with all characters of the input columns replaced by `*`. **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
+3. Redshift does not easily allow cross-database references. As a result, user-defined functions **must be individually installed** in each database where you want to use them.
+
+#### Testing the UDF directly
+We can easily test the newly created UDF by connecting to the database with your favorite application and executing the following queries:
+```SQL
+# Retrieving data without masking
+dev=# SELECT name FROM comp_band_table;
+   name    
+-----------
+ James
+ Sophie
+ Sylvester
+(3 rows)
 ```
+
+and
+```SQL
+# Retrieving data masked with the newly installed UDF
+dev=# SELECT cyral.mask_string(name) FROM comp_band_table;
+ mask_string 
+-------------
+ *****
+ ******
+ *********
+(3 rows)
+```
+
+
+#### Testing the UDF with Cyral Policies
+
+Here we assume the following:
+  * A Redshift data repository was already created in the Control Plane / Management Console.
+  * The data repository has the masking policy enforcement option enabled.
+  * The data repository has the appropriate Data Labels already configured.
+  * The data repository is accessible through a sidecar.
+
+If the above pre-conditions are not met, or your need further help in configuring them, please refer to:
+* Cyral Docs :arrow_right: [Track repositories](https://cyral.com/docs/manage-repositories/repo-track).
+* Cyral Docs :arrow_right: [Data Mapping](https://cyral.com/docs/policy/datamap).
+* Cyral Docs :arrow_right: [Turning on masking for a repository](https://cyral.com/docs/using-cyral/masking/#turn-on-masking-for-the-repository-in-cyral).
+* Cyral Docs :arrow_right: [Binding a repository to a sidecar](https://cyral.com/docs/sidecars/sidecar-bind-repo).
+
+##### Example Global Policy that refers to the custom function
+
+```yaml
+data:
+  - NAMES
+rules:
+  - reads:
+      - data:
+          - custom:mask_string(NAMES)
+        rows: any
+        severity: low
+```
+
+##### Connecting and retrieving data
+```sql
+# Every query that retrieves the contents of the field `name` will have the result payload masked
+#
+# Note that the end-user is not expected to type the UDF name in their queries, and in fact, they
+# are not even expected to be aware that such UDF exists.
+dev=# SELECT name FROM comp_band_table;
+   name    
+-----------
+ *****
+ ******
+ *********
+(3 rows)
+```
+
+In the example above, the policy only refers to the UDF by its name. This is valid because in Redshift, the schema `cyral` has a special meaning for the sidecar, as it is the default location where the sidecar looks for functions, when they are not fully qualified. This behavior allows for the use of a single Global Policy for different databases or repository types.
+
+However, it is possible to install UDFs in any other schema, as long as Global Policies refer to them using qualified names. For the above example, a fully qualified table
+reference would be:
+
+```yaml
+data:
+  - NAMES
+rules:
+  - reads:
+      - data:
+          - custom:cyral.mask_string(NAMES)
+        rows: any
+        severity: low
+```
+
+* note the `cyral.` prefix, which denotes the schema name.
 
 ---
 </details>
