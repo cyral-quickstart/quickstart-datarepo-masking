@@ -218,7 +218,6 @@ $$ LANGUAGE plpythonu;
 
 -- 3. Grant the execution privilege to everyone, through the PUBLIC role
 GRANT EXECUTE ON FUNCTION cyral.mask_string(input_string TEXT) TO PUBLIC;
-
 ```
 
 The above script can be saved to a file, e.g. `example-udf-redshift.sql`, and can be copied as is and executed in your application of choice. In `psql`, it can be installed with the following command:
@@ -302,7 +301,6 @@ dev=# SELECT name FROM comp_band_table;
  ******
  *********
 (3 rows)
-
 ```
 
 In the example above, the policy only refers to the UDF by its name. This is valid because in Redshift, the schema `cyral` has a special meaning for the sidecar, as it is the default location where the sidecar looks for functions, when they are not fully qualified. This behavior allows for the use of a single Global Policy for different databases or repository types.
