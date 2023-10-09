@@ -22,11 +22,8 @@ The diagram above illustrates the components involved and the workflow of creati
 The overall configuration process can be split into four main stages:
  - **Defining Requirements**: A security team or system administrators are responsible for defining the expected masking behavior when certain databases and tables are accessed by different users or groups.
  - **Function(s) development**: Database engineers write one or more user-defined functions that meet the requirements defined by the security team. These functions can be type specific, meant to act on specific database columns, or could be generic, allowing any column to be used as input.
-   - [Guide and example function implementation.](./link/to/function-implementation)
  - **Function(s) deployment**: Database administrators install the custom function(s) in the desirable Database System, making them available to be used in Cyral Policies.
-    - [Guide and example function deployments.](./link/to/function-install)
  - **Policy crafting**: Admins with write permissions to the Cyral Management Console write specific [Global or Repo-level Policies](https://cyral.com/docs/policy/policy-structure) that leverages the newly created user-defined functions, which should loaded and enforced by Cyral sidecars on future user queries.
-   - [Guide and example policies.](./link/to/crafting/policies)
 
 
 #### Possible end-user workflows
@@ -43,10 +40,10 @@ The diagram above illustrates these possible workflows. Different users execute 
 ### Installing and Using User-Defined Functions
 
 User-defined functions are usually installed within a database/schema entity inside your Database system. Users can refer to these functions in their query by specifying the function name, with an optional schema/database qualifier. 
-* **To get more details on how to install and use UDFs, please refer to**: <br>[UDF Installation guides](./install-instructions).
+* **To get more details on how to install and use UDFs, please refer to**: <br>[UDF Installation guide](./install-instructions).
 
 
-* **To get more details on how to refer to UDFs in your Cyral Policies, please refer to**: <br> [Policy construction guide](./to-od).
+* **To get more details on how to refer to UDFs in your Cyral Policies, please refer to**: <br> [Policy construction guide](https://cyral.com/docs/policy/policy-structure).
 
 <br><br>
 ### Example Masking Functions
