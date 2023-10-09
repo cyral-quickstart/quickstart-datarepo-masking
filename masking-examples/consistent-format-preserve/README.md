@@ -7,7 +7,7 @@ Consistent Format Preserve is a custom masking function used to ensure consisten
 
 The data is consistently randomized, meaning that for a specific input value, the same randomized representation will be always generated. This behavior is particularly useful when different tables are subject to the same masking policy and you want to be able to find references of one table into the other.
 
-* **Example**: A mask declared as `custom:consistent_format(EMAIL) may replace an address of `MyEmail123@cyral.com`` with `ZaFxbcd517@dzbxq.pqd`.
+* **Example**: A mask declared as `custom:consistent_mask(EMAIL) may replace an address of `MyEmail123@cyral.com`` with `ZaFxbcd517@dzbxq.pqd`.
 
 
 Availability
