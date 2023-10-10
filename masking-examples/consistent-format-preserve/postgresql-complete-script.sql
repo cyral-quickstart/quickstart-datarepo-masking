@@ -33,8 +33,8 @@ AS $$
 DECLARE
   seed_base DOUBLE PRECISION;
 BEGIN
-  -- Sets a seed with [-1, 1] interval
-  -- HASHTEXT returns an int32 value: min_int32/2^31=-1 and max_int32/2^31=1
+  -- Sets a seed within [-1, 1] interval
+  -- HASHTEXT returns an int32 value: min_int32/2^31=-1 and max_int32/2^31=0.99999999953
   seed_base := HASHTEXT(data::text) / 2^31;
   PERFORM SETSEED(seed_base);
 
@@ -48,8 +48,8 @@ AS $$
 DECLARE
   seed_base DOUBLE PRECISION;
 BEGIN
-  -- Sets a seed with [-1, 1] interval
-  -- HASHTEXT returns an int32 value: min_int32/2^31=-1 and max_int32/2^31=1
+  -- Sets a seed within [-1, 1] interval
+  -- HASHTEXT returns an int32 value: min_int32/2^31=-1 and max_int32/2^31=0.99999999953
   seed_base := HASHTEXT(data::text) / 2^31;
   PERFORM SETSEED(seed_base);
 
@@ -63,8 +63,8 @@ AS $$
 DECLARE
   seed_base DOUBLE PRECISION;
 BEGIN
-  -- Sets a seed with [-1, 1] interval
-  -- HASHTEXT returns an int32 value: min_int32/2^31=-1 and max_int32/2^31=1
+  -- Sets a seed within [-1, 1] interval
+  -- HASHTEXT returns an int32 value: min_int32/2^31=-1 and max_int32/2^31=0.99999999953
   seed_base := HASHTEXT(data::text) / 2^31;
   PERFORM SETSEED(seed_base);
 
