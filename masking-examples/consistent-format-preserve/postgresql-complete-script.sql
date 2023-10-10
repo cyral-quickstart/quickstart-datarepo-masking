@@ -2,7 +2,7 @@
 CREATE SCHEMA IF NOT EXISTS cyral;
 
 -- 2. Create the new function in the target schema:
-CREATE OR REPLACE FUNCTION cyral.consistent_format_preserve(input_string TEXT)
+CREATE OR REPLACE FUNCTION cyral.consistent_mask(input_string TEXT)
 RETURNS TEXT AS $$
 DECLARE
   response TEXT;
@@ -28,4 +28,4 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- 3. Grant the execution privilege to everyone, through the PUBLIC role
-GRANT EXECUTE ON FUNCTION cyral.consistent_format_preserve(text) TO PUBLIC;
+GRANT EXECUTE ON FUNCTION cyral.consistent_mask(text) TO PUBLIC;

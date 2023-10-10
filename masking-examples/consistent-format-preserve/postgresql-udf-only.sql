@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION ${SCHEMA}.consistent_format_preserve(input_string TEXT)
+CREATE OR REPLACE FUNCTION ${SCHEMA}.consistent_mask(input_string TEXT)
 RETURNS TEXT AS $$
 DECLARE
   response TEXT;
