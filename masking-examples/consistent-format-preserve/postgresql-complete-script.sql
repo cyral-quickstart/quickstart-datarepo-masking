@@ -2,8 +2,8 @@
 CREATE SCHEMA IF NOT EXISTS cyral;
 
 -- 2. Create the new function in the target schema:
-CREATE OR REPLACE FUNCTION cyral.consistent_mask(data TEXT)
-RETURNS TEXT AS $$
+CREATE OR REPLACE FUNCTION cyral.consistent_mask(data ANYELEMENT)
+RETURNS ANYELEMENT AS $$
 DECLARE
   response TEXT;
   string_char CHAR(1);
@@ -11,10 +11,9 @@ DECLARE
 BEGIN
   -- Sets a seed within [-1, 1] interval
   -- HASHTEXT returns an int32 value: min_int32/2^31=-1 and max_int32/2^31=0.99999999953
-  seed_base := HASHTEXT(data) / 2^31;
+  seed_base := HASHTEXT(data::TEXT) / 2^31;
   PERFORM SETSEED(seed_base);
 
-  seed_base := ABS(HASHTEXT(data));
   FOR i IN 1..LENGTH(data) LOOP
     string_char := SUBSTRING(data, i, 1);
     CASE
@@ -78,7 +77,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- 3. Grant the execution privilege to everyone, through the PUBLIC role
-GRANT EXECUTE ON FUNCTION cyral.consistent_mask(TEXT) TO PUBLIC;
+GRANT EXECUTE ON FUNCTION cyral.consistent_mask(ANYELEMENT) TO PUBLIC;
 GRANT EXECUTE ON FUNCTION cyral.consistent_mask(NUMERIC) TO PUBLIC;
 GRANT EXECUTE ON FUNCTION cyral.consistent_mask(DOUBLE PRECISION) TO PUBLIC;
 GRANT EXECUTE ON FUNCTION cyral.consistent_mask(INT) TO PUBLIC;
