@@ -5,16 +5,16 @@ GRANT EXECUTE ON DBMS_CRYPTO TO PUBLIC;
 
 -- 2. Create the new function in the target schema:
 CREATE OR REPLACE FUNCTION CYRAL."consistent_mask"(
-  data IN VARCHAR2
+    data IN VARCHAR2
 )
 RETURN VARCHAR2
 IS
     masked_data VARCHAR2(32767) := '';
     hash raw(32);
 BEGIN
-   hash := DBMS_CRYPTO.HASH(UTL_I18N.STRING_TO_RAW(data, 'AL32UTF8'), DBMS_CRYPTO.HASH_SH256);
-   DBMS_RANDOM.SEED(hash);
-   FOR i IN 1..LENGTH(data) LOOP
+    hash := DBMS_CRYPTO.HASH(UTL_I18N.STRING_TO_RAW(data, 'AL32UTF8'), DBMS_CRYPTO.HASH_SH256);
+    DBMS_RANDOM.SEED(hash);
+    FOR i IN 1..LENGTH(data) LOOP
        CASE
            WHEN regexp_like(SUBSTR(data, i, 1), '[A-Z]') THEN
                masked_data := CONCAT(masked_data, CHR(FLOOR(DBMS_RANDOM.VALUE()*(90-65+1))+65));
@@ -25,9 +25,9 @@ BEGIN
            ELSE
                masked_data := CONCAT(masked_data, SUBSTR(data, i, 1));
        END CASE;
-  END LOOP;
+    END LOOP;
 
-  RETURN masked_data;
+    RETURN masked_data;
 END;
 /
 
