@@ -79,6 +79,7 @@ If the above pre-conditions are not met, or you need further help in configuring
 
 ##### Example Global Policy that refers to the custom function
 
+For PostgreSQL, Amazon Redshift and Snowflake:
 ```yaml
 data:
   - EMAIL
@@ -89,6 +90,19 @@ rules:
         rows: any
         severity: low
 ```
+
+For SQL Server, Oracle, and MySQL:
+```yaml
+data:
+  - EMAIL
+rules:
+  - reads:
+      - data:
+          - custom:consistent_mask_${type}(EMAIL)
+        rows: any
+        severity: low
+```
+`${type} must be replaced by the correct type according to the column type.
 
 ##### Connecting and retrieving data
 
