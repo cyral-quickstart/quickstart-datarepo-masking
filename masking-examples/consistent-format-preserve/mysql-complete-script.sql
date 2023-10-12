@@ -5,25 +5,27 @@ CREATE SCHEMA IF NOT EXISTS cyral;
 SET GLOBAL log_bin_trust_function_creators = 1;
 
 -- 3. Create the new function in the target schema:
-
-DROP FUNCTION IF EXISTS cyral.regexp;
 DROP FUNCTION IF EXISTS cyral.consistent_mask;
 DROP FUNCTION IF EXISTS cyral.consistent_mask_text;
+DROP FUNCTION IF EXISTS cyral.consistent_mask_tinytext;
+DROP FUNCTION IF EXISTS cyral.consistent_mask_char;
+DROP FUNCTION IF EXISTS cyral.consistent_mask_varchar;
 DROP FUNCTION IF EXISTS cyral.consistent_mask_int;
+DROP FUNCTION IF EXISTS cyral.consistent_mask_int_unsigned;
+DROP FUNCTION IF EXISTS cyral.consistent_mask_tinyint;
+DROP FUNCTION IF EXISTS cyral.consistent_mask_tinyint_unsigned;
+DROP FUNCTION IF EXISTS cyral.consistent_mask_smallint;
+DROP FUNCTION IF EXISTS cyral.consistent_mask_smallint_unsigned;
+DROP FUNCTION IF EXISTS cyral.consistent_mask_mediumint;
+DROP FUNCTION IF EXISTS cyral.consistent_mask_mediumint_unsigned;
+DROP FUNCTION IF EXISTS cyral.consistent_mask_bigint;
+DROP FUNCTION IF EXISTS cyral.consistent_mask_bigint_unsigned;
+DROP FUNCTION IF EXISTS cyral.consistent_mask_double;
+DROP FUNCTION IF EXISTS cyral.consistent_mask_float;
+DROP FUNCTION IF EXISTS cyral.consistent_mask_decimal;
 
 DELIMITER $
-CREATE FUNCTION cyral.regexp(expr TEXT, pat TEXT)
-RETURNS INT
-DETERMINISTIC
-BEGIN
-    RETURN REGEXP_LIKE(expr, pat, 'c');
-END$
-DELIMITER ;
-
-DELIMITER $
-CREATE FUNCTION cyral.consistent_mask(
-    mask_details JSON
-)
+CREATE FUNCTION cyral.consistent_mask(mask_details JSON)
 RETURNS JSON
 DETERMINISTIC
 BEGIN
@@ -53,11 +55,11 @@ BEGIN
     WHILE
     preserve_counter <= unmasked_length DO
         SET current_char = SUBSTRING(unmasked_data,preserve_counter, 1);
-        IF cyral.regexp(current_char, '[a-z]') THEN
+        IF REGEXP_LIKE(current_char, '[a-z]', 'c') THEN
             SET preserve_data = CONCAT(preserve_data, CHAR(CAST(RAND(seed+preserve_counter)*(122 -97)+97 AS UNSIGNED)));
-        ELSEIF cyral.regexp(current_char, '[A-Z]') THEN
+        ELSEIF REGEXP_LIKE(current_char, '[A-Z]', 'c') THEN
             SET preserve_data = CONCAT(preserve_data, CHAR(CAST(RAND(seed+preserve_counter)*(90 - 65)+65 AS UNSIGNED)));
-        ELSEIF cyral.regexp(current_char, '[0-9]') THEN
+        ELSEIF REGEXP_LIKE(current_char, '[0-9]', 'c') THEN
             SET preserve_data = CONCAT(preserve_data, CAST(CAST(RAND(seed+preserve_counter)*(9-0)+0 as UNSIGNED) as CHAR(1)));
         ELSE
             SET preserve_data = CONCAT(preserve_data, current_char);
@@ -70,9 +72,7 @@ END$
 DELIMITER ;
 
 DELIMITER $
-CREATE FUNCTION cyral.consistent_mask_text(
-    unmasked TEXT
-)
+CREATE FUNCTION cyral.consistent_mask_text(unmasked TEXT)
 RETURNS TEXT
 DETERMINISTIC
 BEGIN
@@ -80,7 +80,6 @@ BEGIN
     BEGIN
         RETURN NULL;
     END;
-
     SET @mask_details = JSON_OBJECT('unMasked', unmasked);
     SET @mask_result = cyral.consistent_mask(@mask_details);
     SET @masked = JSON_UNQUOTE(JSON_EXTRACT(@mask_result, '$.masked'));
@@ -89,9 +88,53 @@ END$
 DELIMITER ;
 
 DELIMITER $
-CREATE FUNCTION cyral.consistent_mask_int(
-    unmasked INT
-)
+CREATE FUNCTION cyral.consistent_mask_tinytext(unmasked TINYTEXT)
+RETURNS TINYTEXT
+DETERMINISTIC
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        RETURN NULL;
+    END;
+    SET @mask_result = cyral.consistent_mask(JSON_OBJECT('unMasked', unmasked));
+    SET @masked = JSON_UNQUOTE(JSON_EXTRACT(@mask_result, '$.masked'));
+    RETURN @masked;
+END$
+DELIMITER ;
+
+DELIMITER $
+CREATE FUNCTION cyral.consistent_mask_char(unmasked CHAR(255))
+RETURNS CHAR(255)
+DETERMINISTIC
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        RETURN NULL;
+    END;
+    SET @mask_result = cyral.consistent_mask(JSON_OBJECT('unMasked', unmasked));
+    SET @masked = JSON_UNQUOTE(JSON_EXTRACT(@mask_result, '$.masked'));
+    RETURN @masked;
+END$
+DELIMITER ;
+
+-- Docs says max length is 65535, but it can be 16383 in case a VARCHAR column uses the utf8mb4 char set (4 bytes per character)
+DELIMITER $
+CREATE FUNCTION cyral.consistent_mask_varchar(unmasked VARCHAR(16383))
+RETURNS VARCHAR(16383)
+DETERMINISTIC
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        RETURN NULL;
+    END;
+    SET @mask_result = cyral.consistent_mask(JSON_OBJECT('unMasked', unmasked));
+    SET @masked = JSON_UNQUOTE(JSON_EXTRACT(@mask_result, '$.masked'));
+    RETURN CONVERT(@masked, CHAR(16383));
+END$
+DELIMITER ;
+
+DELIMITER $
+CREATE FUNCTION cyral.consistent_mask_int(unmasked INT)
 RETURNS INT
 DETERMINISTIC
 BEGIN
@@ -99,11 +142,193 @@ BEGIN
     BEGIN
         RETURN NULL;
     END;
-
-    SET @mask_details = JSON_OBJECT('unMasked', unmasked);
-    SET @mask_result = cyral.consistent_mask(@mask_details);
+    SET @mask_result = cyral.consistent_mask(JSON_OBJECT('unMasked', unmasked));
     SET @masked = JSON_UNQUOTE(JSON_EXTRACT(@mask_result, '$.masked'));
     RETURN CONVERT(@masked, SIGNED);
+END$
+DELIMITER ;
+
+DELIMITER $
+CREATE FUNCTION cyral.consistent_mask_int_unsigned(unmasked INT UNSIGNED)
+RETURNS INT UNSIGNED
+DETERMINISTIC
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        RETURN NULL;
+    END;
+    SET @mask_result = cyral.consistent_mask(JSON_OBJECT('unMasked', unmasked));
+    SET @masked = JSON_UNQUOTE(JSON_EXTRACT(@mask_result, '$.masked'));
+    RETURN CONVERT(@masked, UNSIGNED);
+END$
+DELIMITER ;
+
+DELIMITER $
+CREATE FUNCTION cyral.consistent_mask_tinyint(unmasked TINYINT)
+RETURNS TINYINT
+DETERMINISTIC
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        RETURN NULL;
+    END;
+    SET @mask_result = cyral.consistent_mask(JSON_OBJECT('unMasked', unmasked));
+    SET @masked = JSON_UNQUOTE(JSON_EXTRACT(@mask_result, '$.masked'));
+    RETURN CONVERT(@masked, SIGNED);
+END$
+DELIMITER ;
+
+DELIMITER $
+CREATE FUNCTION cyral.consistent_mask_tinyint_unsigned(unmasked TINYINT UNSIGNED)
+RETURNS TINYINT UNSIGNED
+DETERMINISTIC
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        RETURN NULL;
+    END;
+    SET @mask_result = cyral.consistent_mask(JSON_OBJECT('unMasked', unmasked));
+    SET @masked = JSON_UNQUOTE(JSON_EXTRACT(@mask_result, '$.masked'));
+    RETURN CONVERT(@masked, UNSIGNED);
+END$
+DELIMITER ;
+
+DELIMITER $
+CREATE FUNCTION cyral.consistent_mask_smallint(unmasked SMALLINT)
+RETURNS SMALLINT
+DETERMINISTIC
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        RETURN NULL;
+    END;
+    SET @mask_result = cyral.consistent_mask(JSON_OBJECT('unMasked', unmasked));
+    SET @masked = JSON_UNQUOTE(JSON_EXTRACT(@mask_result, '$.masked'));
+    RETURN CONVERT(@masked, SIGNED);
+END$
+DELIMITER ;
+
+DELIMITER $
+CREATE FUNCTION cyral.consistent_mask_smallint_unsigned(unmasked SMALLINT UNSIGNED)
+RETURNS SMALLINT UNSIGNED
+DETERMINISTIC
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        RETURN NULL;
+    END;
+    SET @mask_result = cyral.consistent_mask(JSON_OBJECT('unMasked', unmasked));
+    SET @masked = JSON_UNQUOTE(JSON_EXTRACT(@mask_result, '$.masked'));
+    RETURN CONVERT(@masked, UNSIGNED);
+END$
+DELIMITER ;
+
+DELIMITER $
+CREATE FUNCTION cyral.consistent_mask_mediumint(unmasked MEDIUMINT)
+RETURNS MEDIUMINT
+DETERMINISTIC
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        RETURN NULL;
+    END;
+    SET @mask_result = cyral.consistent_mask(JSON_OBJECT('unMasked', unmasked));
+    SET @masked = JSON_UNQUOTE(JSON_EXTRACT(@mask_result, '$.masked'));
+    RETURN CONVERT(@masked, SIGNED);
+END$
+DELIMITER ;
+
+DELIMITER $
+CREATE FUNCTION cyral.consistent_mask_mediumint_unsigned(unmasked MEDIUMINT UNSIGNED)
+RETURNS MEDIUMINT UNSIGNED
+DETERMINISTIC
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        RETURN NULL;
+    END;
+    SET @mask_result = cyral.consistent_mask(JSON_OBJECT('unMasked', unmasked));
+    SET @masked = JSON_UNQUOTE(JSON_EXTRACT(@mask_result, '$.masked'));
+    RETURN CONVERT(@masked, UNSIGNED);
+END$
+DELIMITER ;
+
+DELIMITER $
+CREATE FUNCTION cyral.consistent_mask_bigint(unmasked BIGINT)
+RETURNS BIGINT
+DETERMINISTIC
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        RETURN NULL;
+    END;
+    SET @mask_result = cyral.consistent_mask(JSON_OBJECT('unMasked', unmasked));
+    SET @masked = JSON_UNQUOTE(JSON_EXTRACT(@mask_result, '$.masked'));
+    RETURN CONVERT(@masked, SIGNED);
+END$
+DELIMITER ;
+
+DELIMITER $
+CREATE FUNCTION cyral.consistent_mask_bigint_unsigned(unmasked BIGINT UNSIGNED)
+RETURNS BIGINT UNSIGNED
+DETERMINISTIC
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        RETURN NULL;
+    END;
+    SET @mask_result = cyral.consistent_mask(JSON_OBJECT('unMasked', unmasked));
+    SET @masked = JSON_UNQUOTE(JSON_EXTRACT(@mask_result, '$.masked'));
+    RETURN CONVERT(@masked, UNSIGNED);
+END$
+DELIMITER ;
+
+-- https://dev.mysql.com/doc/refman/8.0/en/floating-point-types.html
+-- real and double are the same thing
+DELIMITER $
+CREATE FUNCTION cyral.consistent_mask_double(unmasked DOUBLE)
+RETURNS DOUBLE
+DETERMINISTIC
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        RETURN NULL;
+    END;
+    SET @mask_result = cyral.consistent_mask(JSON_OBJECT('unMasked', unmasked));
+    SET @masked = JSON_UNQUOTE(JSON_EXTRACT(@mask_result, '$.masked'));
+    RETURN CONVERT(@masked, DECIMAL(65, 30));
+END$
+DELIMITER ;
+
+DELIMITER $
+CREATE FUNCTION cyral.consistent_mask_float(unmasked FLOAT)
+RETURNS FLOAT
+DETERMINISTIC
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        RETURN NULL;
+    END;
+    SET @mask_result = cyral.consistent_mask(JSON_OBJECT('unMasked', unmasked));
+    SET @masked = JSON_UNQUOTE(JSON_EXTRACT(@mask_result, '$.masked'));
+    RETURN CONVERT(@masked, DECIMAL(65, 30));
+END$
+DELIMITER ;
+
+-- https://dev.mysql.com/doc/refman/8.0/en/fixed-point-types.html
+-- decimal and numeric are the same thing
+DELIMITER $
+CREATE FUNCTION cyral.consistent_mask_decimal(unmasked DECIMAL)
+RETURNS DECIMAL
+DETERMINISTIC
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        RETURN NULL;
+    END;
+    SET @mask_result = cyral.consistent_mask(JSON_OBJECT('unMasked', unmasked));
+    SET @masked = JSON_UNQUOTE(JSON_EXTRACT(@mask_result, '$.masked'));
+    RETURN CONVERT(@masked, DECIMAL);
 END$
 DELIMITER ;
 
