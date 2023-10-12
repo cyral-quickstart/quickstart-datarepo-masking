@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION CYRAL."consistent_mask_varchar"(
+CREATE OR REPLACE FUNCTION ${USER_SCHEMA}."consistent_mask_varchar"(
     data IN VARCHAR2
 )
 RETURN VARCHAR2
@@ -25,12 +25,12 @@ BEGIN
 END;
 /
 
-CREATE OR REPLACE FUNCTION CYRAL."consistent_mask_number"(
+CREATE OR REPLACE FUNCTION ${USER_SCHEMA}."consistent_mask_number"(
     data IN NUMBER
 )
 RETURN NUMBER
 IS
 BEGIN
-    RETURN CYRAL."consistent_mask_varchar"(data);
+    RETURN ${USER_SCHEMA}."consistent_mask_varchar"(data);
 END;
 /
