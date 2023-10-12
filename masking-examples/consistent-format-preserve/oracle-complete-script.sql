@@ -4,13 +4,13 @@ CREATE USER CYRAL identified by "<password>";
 GRANT EXECUTE ON DBMS_CRYPTO TO PUBLIC;
 
 -- 2. Create the new function in the target schema:
-CREATE OR REPLACE FUNCTION CYRAL."consistent_mask"(
+CREATE OR REPLACE FUNCTION CYRAL."consistent_mask_varchar"(
     data IN VARCHAR2
 )
 RETURN VARCHAR2
 IS
     masked_data VARCHAR2(32767) := '';
-    hash raw(32);
+    hash RAW(32);
 BEGIN
     hash := DBMS_CRYPTO.HASH(UTL_I18N.STRING_TO_RAW(data, 'AL32UTF8'), DBMS_CRYPTO.HASH_SH256);
     DBMS_RANDOM.SEED(hash);
@@ -32,26 +32,15 @@ END;
 /
 
 CREATE OR REPLACE FUNCTION CYRAL."consistent_mask_number"(
-  data IN NUMBER
+    data IN NUMBER
 )
 RETURN NUMBER
 IS
 BEGIN
-    RETURN CYRAL."consistent_mask"(CAST(data AS VARCHAR2));
-END;
-/
-
-CREATE OR REPLACE FUNCTION CYRAL."consistent_mask_varchar"(
-  data IN VARCHAR2
-)
-RETURN VARCHAR2
-IS
-BEGIN
-    RETURN CYRAL."consistent_mask"(data);
+    RETURN CYRAL."consistent_mask_varchar"(data);
 END;
 /
 
 -- 3. Grant the execution privilege to everyone, through the PUBLIC role
-GRANT ALL PRIVILEGES ON CYRAL."consistent_mask" TO PUBLIC;
-GRANT ALL PRIVILEGES ON CYRAL."consistent_mask_number" TO PUBLIC;
 GRANT ALL PRIVILEGES ON CYRAL."consistent_mask_varchar" TO PUBLIC;
+GRANT ALL PRIVILEGES ON CYRAL."consistent_mask_number" TO PUBLIC;
