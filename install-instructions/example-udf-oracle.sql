@@ -20,4 +20,4 @@ END;
 /
 
 -- 3. Grant the execution privilege to everyone, through the PUBLIC role
-GRANT ALL PRIVILEGES ON CYRAL."mask_string" TO PUBLIC;
+GRANT EXECUTE ON CYRAL."mask_string" TO PUBLIC;

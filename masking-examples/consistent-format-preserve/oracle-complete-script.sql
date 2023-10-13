@@ -42,5 +42,5 @@ END;
 /
 
 -- 3. Grant the execution privilege to everyone, through the PUBLIC role
-GRANT ALL PRIVILEGES ON CYRAL."consistent_mask_varchar" TO PUBLIC;
-GRANT ALL PRIVILEGES ON CYRAL."consistent_mask_number" TO PUBLIC;
+GRANT EXECUTE ON CYRAL."consistent_mask_varchar" TO PUBLIC;
+GRANT EXECUTE ON CYRAL."consistent_mask_number" TO PUBLIC;
