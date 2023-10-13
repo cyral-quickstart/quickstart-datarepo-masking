@@ -873,6 +873,8 @@ GRANT ALL PRIVILEGES ON CYRAL."mask_string" TO PUBLIC;
 The above script can be saved to a file, e.g. `example-udf-oracle.sql`, and can be copied as is and executed in your application of choice. In `sqlplus`, considering you are already connected, it can be installed with the following command:
 
 ```
+sqlplus ${USER}/${PASSWORD}@${SIDECAR_HOST}:${SIDECAR_PORT}/${DATABASE}
+
 SQL> @example-udf-oracle.sql
 
 User created.
@@ -881,6 +883,11 @@ Function created.
 
 Grant succeeded.
 ```
+
+where:
+- `SIDECAR_HOST` and `SIDECAR_PORT` point to the sidecar being used to protect your Oracle database.
+- `DATABASE` refers to the underlying database entity, which contains a collection of schemas and tables.
+- `USER` and `PASSWORD` are the specific database user and password, which has the required permissions to execute the above SQL commands.
 
 #### Notes
 1. The above script creates a new user schema, named `CYRAL`. Any other schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#add-section) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
