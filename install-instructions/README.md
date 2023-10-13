@@ -88,12 +88,10 @@ where: <br>
 
 
 #### Notes
-1. The above script creates a new optional schema, named `cyral`. Any other schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#udf-install-location-in-postgresql) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
+1. The above script creates a new schema, named `cyral`. Any other schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#udf-install-location-in-postgresql) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
 2. Above we have a simplistic UDF example that receives a column entry of type `text` and returns another `text` value with all characters of the input columns replaced by `*`. **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
 3. PostgreSQL does not easily allow cross-database references. As a result, user-defined functions **must be individually installed** in each database where you want to use them.
-
-
-
+4. The script installs the UDFs in the same location as the [Cyral mask helper](https://cyral.com/docs/using-cyral/masking/#install-the-cyral-mask-helper-in-your-database). [Uninstalling](https://cyral.com/docs/using-cyral/masking/#remove-the-cyral-mask-function) the Cyral mask helper will also remove the previous installed UDF;
 
 #### Testing the UDF directly
 We can easily test the newly created UDF by connecting to the database with your favorite application and executing the following queries:
@@ -235,6 +233,7 @@ where:
 1. The above script creates a new schema, named `cyral`. Any other schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#udf-install-location-in-redshift) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
 2. Above we have a simplistic UDF example that receives a column entry of type `TEXT` and returns another `TEXT` value with all characters of the input columns replaced by `*`. **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
 3. Redshift does not easily allow cross-database references. As a result, user-defined functions **must be individually installed** in each database where you want to use them.
+4. The script installs the UDFs in the same location as the [Cyral mask helper](https://cyral.com/docs/using-cyral/masking/#install-the-cyral-mask-helper-in-your-database). [Uninstalling](https://cyral.com/docs/using-cyral/masking/#remove-the-cyral-mask-function) the Cyral mask helper will also remove the previous installed UDF;
 
 #### Testing the UDF directly
 We can easily test the newly created UDF by connecting to the database with your favorite application and executing the following queries:
@@ -399,9 +398,7 @@ where: <br>
 1. The above script creates new database and schema, both named `CYRAL`. Any other database and schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#udf-install-location-in-snowflake) for a complete understanding on how the database and schema name impacts on how you refer to UDFs in policies.
 2. Above we have a simplistic UDF example that receives a column entry of type `string` and returns another `string` value with all characters of the input columns replaced by `*`. **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
 3. Snowflake supports cross-database references. As a result, user-defined functions can be created once and shared across all your available databases.
-
-
-
+4. The script installs the UDFs in the same location as the [Cyral mask helper](https://cyral.com/docs/using-cyral/masking/#install-the-cyral-mask-helper-in-your-database). [Uninstalling](https://cyral.com/docs/using-cyral/masking/#remove-the-cyral-mask-function) the Cyral mask helper will also remove the previous installed UDF;
 
 #### Testing the UDF directly
 We can easily test the newly created UDF by connecting to the database with your favorite application and executing the following queries:
@@ -577,7 +574,7 @@ where:
 #### Notes
 1. The above script creates a new schema/database (synonyms), named `cyral`. Any other schema/database could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#udf-install-location-in-mysql) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
 2. Above we have a simplistic UDF example that receives a column entry of type `TEXT` and returns another `TEXT` value with all characters of the input columns replaced by `*`. **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
-
+3. The script installs the UDFs in the same location as the [Cyral mask helper](https://cyral.com/docs/using-cyral/masking/#install-the-cyral-mask-helper-in-your-database). [Uninstalling](https://cyral.com/docs/using-cyral/masking/#remove-the-cyral-mask-function) the Cyral mask helper will also remove the previous installed UDF;
 
 #### Testing the UDF directly
 We can easily test the newly created UDF by connecting to the database with your favorite application and executing the following queries:
@@ -743,6 +740,7 @@ where:
 1. The above script creates new database and schema, both named `cyral`. Any other database and schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#udf-install-location-in-sql-server) for a complete understanding on how the database and schema name impacts on how you refer to UDFs in policies.
 2. Above we have a simplistic UDF example that receives a column entry of type `NVARCHAR` and returns another `NVARCHAR` value with all characters of the input columns replaced by `*`. **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
 3. SQL Server supports cross-database references. As a result, user-defined functions can be created once and shared across all your available databases.
+4. The script installs the UDFs in the same location as the [Cyral mask helper](https://cyral.com/docs/using-cyral/masking/#install-the-cyral-mask-helper-in-your-database). [Uninstalling](https://cyral.com/docs/using-cyral/masking/#remove-the-cyral-mask-function) the Cyral mask helper will also remove the previous installed UDF;
 
 #### Testing the UDF directly
 We can easily test the newly created UDF by connecting to the database with your favorite application and executing the following queries:
@@ -900,7 +898,7 @@ where:
 #### Notes
 1. The above script creates a new user schema, named `CYRAL`. Any other schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#udf-install-location-in-oracle) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
 2. Above we have a simplistic UDF example that receives a column entry of type `VARCHAR` and returns another `VARCHAR` value with all characters of the input columns replaced by `*`. **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
-
+3. The script installs the UDFs in the same location as the [Cyral mask helper](https://cyral.com/docs/using-cyral/masking/#install-the-cyral-mask-helper-in-your-database). [Uninstalling](https://cyral.com/docs/using-cyral/masking/#remove-the-cyral-mask-function) the Cyral mask helper will also remove the previous installed UDF;
 
 #### Testing the UDF directly
 We can easily test the newly created UDF by connecting to the database with your favorite application and executing the following queries:
