@@ -102,7 +102,7 @@ rules:
         rows: any
         severity: low
 ```
-`${type} must be replaced by the correct type according to the column type.
+`${type}` must be replaced by the correct type according to the column type.
 
 ##### Connecting and retrieving data
 
