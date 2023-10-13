@@ -29,31 +29,31 @@ This directory contains two `.sql` files for each supported repo type:
 #### Installation examples using CLI tools for the supported databases
 * PostgreSQL 
   ```sh
-  psql -h ${SIDECAR_HOST} -p 5432 -d ${DATABASE} -U ${USER} -f ./postgresql-complete-script.sql
+  psql -h ${SIDECAR_HOST} -p ${SIDECAR_PORT} -d ${DATABASE} -U ${USER} -f ./postgresql-complete-script.sql
   ```
 * Amazon Redshift
   ```sh
-  psql -h ${SIDECAR_HOST} -p 5432 -d ${DATABASE} -U ${USER} -f ./redshift-complete-script.sql
+  psql -h ${SIDECAR_HOST} -p ${SIDECAR_PORT} -d ${DATABASE} -U ${USER} -f ./redshift-complete-script.sql
   ```
 * MySQL
   ```sh
-  mysql -h ${SIDECAR_HOST} -P 3306 -u ${USER} -p  < mysql-complete-script.sql
+  mysql -h ${SIDECAR_HOST} -P ${SIDECAR_PORT} -u ${USER} -p  < mysql-complete-script.sql
   ```
 * Oracle
   ```sh
-  sqlplus ${USER}/${PASSWORD}@${SIDECAR_HOST}:1521/${DATABASE}
+  sqlplus ${USER}/${PASSWORD}@${SIDECAR_HOST}:${SIDECAR_PORT}/${DATABASE}
 
   SQL> @oracle-complete-script.sql
 
-        User created.
+       User created.
 
-        Function created.
+       Function created.
 
-        Grant succeeded.
+       Grant succeeded.
   ```
 * Snowflake
   ```sh
-  snowsql -a ${SNOWFLAKE_ACCOUNT} -u ${USER} -h ${SIDECAR_ENDPOINT} -p 443 -w ${WAREHOUSE} -f ./snowflake-complete-script.sql
+  snowsql -a ${SNOWFLAKE_ACCOUNT} -u ${USER} -h ${SIDECAR_ENDPOINT} -p ${SIDECAR_PORT} -w ${WAREHOUSE} -f ./snowflake-complete-script.sql
   ```
 * SQL Server
   ```sh

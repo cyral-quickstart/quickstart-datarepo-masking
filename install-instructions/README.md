@@ -79,12 +79,12 @@ GRANT EXECUTE ON FUNCTION cyral.mask_string(text) TO PUBLIC;
 
 The above script can be saved to a file, e.g. `example-udf-postgresql.sql`, and can be copied as is and executed in your application of choice. In `psql`, it can be installed with the following command: <br>
 
-`psql -h ${SIDECAR_HOST} -p 5432 -d ${DATABASE} -U ${USER} -f ./example-udf-postgresql.sql`
+`psql -h ${SIDECAR_HOST} -p ${SIDECAR_PORT} -d ${DATABASE} -U ${USER} -f ./example-udf-postgresql.sql`
 
-where: <br>
-    - `SIDECAR_HOST` points to the sidecar being used to protect your PostgreSQL database. <br>
-    - `DATABASE` refers to the underlying database entity, which contains a collection of schemas and tables. <br>
-    - `USER` is the specific database user, which has the required permissions to execute the above SQL commands. <br>
+where:
+- `SIDECAR_HOST` and `SIDECAR_PORT` point to the sidecar being used to protect your PostgreSQL database.
+- `DATABASE` refers to the underlying database entity, which contains a collection of schemas and tables.
+- `USER` is the specific database user, which has the required permissions to execute the above SQL commands.
 
 
 #### Notes
@@ -384,14 +384,14 @@ GRANT USAGE ON FUNCTION CYRAL.CYRAL."mask_string"(STRING) TO PUBLIC;
 
 The above script can be saved to a file, e.g. `example-udf-snowflake.sql`, and can be copied as is and executed in your application of choice. In `snowsql`, it can be installed with the following command: <br>
 
-`snowsql -a ${SNOWFLAKE_ACCOUNT} -u ${USER} -h ${SIDECAR_ENDPOINT} -p 443 -w ${WAREHOUSE} -f  ./example-udf-snowflake.sql`
+`snowsql -a ${SNOWFLAKE_ACCOUNT} -u ${USER} -h ${SIDECAR_ENDPOINT} -p ${SIDECAR_PORT} -w ${WAREHOUSE} -f  ./example-udf-snowflake.sql`
 
-where: <br>
-    - `SNOWFLAKE_ACCOUNT` refers to the snowflake account ID. <br>
-    - `SIDECAR_HOST` points to the sidecar being used to protect your Snowflake instance. <br>
-    - `DATABASE` refers to the underlying database entity, which contains a collection of schemas and tables. <br>
-    - `USER` is the specific database user, which has the required permissions to execute the above SQL commands. <br>
-    - `WAREHOUSE` is the Snowflake Warehouse to be used. <br>
+where:
+- `SNOWFLAKE_ACCOUNT` refers to the snowflake account ID.
+- `SIDECAR_HOST` and `SIDECAR_PORT` point to the sidecar being used to protect your Snowflake instance.
+- `DATABASE` refers to the underlying database entity, which contains a collection of schemas and tables.
+- `USER` is the specific database user, which has the required permissions to execute the above SQL commands.
+- `WAREHOUSE` is the Snowflake Warehouse to be used.
 
 
 #### Notes
