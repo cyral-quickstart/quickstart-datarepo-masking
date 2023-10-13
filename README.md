@@ -51,7 +51,7 @@ The examples below are ready to be used and covers masking functions that handle
 
 | Function | Description | Supported Repo Types |
 | --------------- | --------------- | --------------- |
-| [Consistent Format Preserve](./masking-examples/consistent-format-preserve/) | UDF that replaces the field's contents with semi-randomized values. It is noteworthy that this transformation maintains consistency, ensuring that identical field content will consistently translate into the same semi-randomized value. This predictable behavior facilitates reliable data manipulation and analysis within the specified context.| :white_check_mark: PostgreSQL <br> :white_check_mark: SQL Server <br> :white_check_mark: Oracle <br> :white_check_mark: MySQL <br> :white_check_mark: Snowflake |
+| [Consistent Format Preserve](./masking-examples/consistent-format-preserve) | UDF that replaces the field's contents with semi-randomized values. It is noteworthy that this transformation maintains consistency, ensuring that identical field content will consistently translate into the same semi-randomized value. This predictable behavior facilitates reliable data manipulation and analysis within the specified context.| :white_check_mark: PostgreSQL <br> :white_check_mark: SQL Server <br> :white_check_mark: Oracle <br> :white_check_mark: MySQL <br> :white_check_mark: Snowflake |
 
 <br><br>
 ### Contributing
