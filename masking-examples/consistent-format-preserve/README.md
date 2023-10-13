@@ -79,7 +79,7 @@ If the above pre-conditions are not met, or you need further help in configuring
 
 ##### Example Global Policy that refers to the custom function
 
-For PostgreSQL, Amazon Redshift and Snowflake:
+For PostgreSQL, Amazon Redshift, Snowflake and Oracle:
 ```yaml
 data:
   - EMAIL
@@ -91,7 +91,7 @@ rules:
         severity: low
 ```
 
-For SQL Server, Oracle, and MySQL:
+For SQL Server and MySQL:
 ```yaml
 data:
   - EMAIL
