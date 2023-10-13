@@ -88,7 +88,7 @@ where: <br>
 
 
 #### Notes
-1. The above script creates a new optional schema, named `cyral`. Any other schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#add-section) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
+1. The above script creates a new optional schema, named `cyral`. Any other schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#udf-install-location-in-postgresql) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
 2. Above we have a simplistic UDF example that receives a column entry of type `text` and returns another `text` value with all characters of the input columns replaced by `*`. **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
 3. PostgreSQL does not easily allow cross-database references. As a result, user-defined functions **must be individually installed** in each database where you want to use them.
 
@@ -163,6 +163,7 @@ finance=> SELECT name from CompBandTable LIMIT 3;
 (3 rows)
 ```
 
+##### UDF install location in PostgreSQL
 
 In the example above, the policy only refers to the UDF by its name. This is valid because in PostgreSQL, the schema `cyral` has a special meaning for the sidecar, as it is the default location where the sidecar looks for functions, when they are not fully qualified. This behavior allows for the use of a single Global Policy for different databases or repository types.
 
@@ -231,7 +232,7 @@ where:
 
 
 #### Notes
-1. The above script creates a new schema, named `cyral`. Any other schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#add-section) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
+1. The above script creates a new schema, named `cyral`. Any other schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#udf-install-location-in-redshift) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
 2. Above we have a simplistic UDF example that receives a column entry of type `TEXT` and returns another `TEXT` value with all characters of the input columns replaced by `*`. **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
 3. Redshift does not easily allow cross-database references. As a result, user-defined functions **must be individually installed** in each database where you want to use them.
 
@@ -302,6 +303,8 @@ dev=# SELECT name FROM comp_band_table;
  *********
 (3 rows)
 ```
+
+##### UDF install location in Redshift
 
 In the example above, the policy only refers to the UDF by its name. This is valid because in Redshift, the schema `cyral` has a special meaning for the sidecar, as it is the default location where the sidecar looks for functions, when they are not fully qualified. This behavior allows for the use of a single Global Policy for different databases or repository types.
 
@@ -393,7 +396,7 @@ where: <br>
 
 
 #### Notes
-1. The above script creates new database and schema, both named `CYRAL`. Any other database and schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#add-section) for a complete understanding on how the database and schema name impacts on how you refer to UDFs in policies.
+1. The above script creates new database and schema, both named `CYRAL`. Any other database and schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#udf-install-location-in-snowflake) for a complete understanding on how the database and schema name impacts on how you refer to UDFs in policies.
 2. Above we have a simplistic UDF example that receives a column entry of type `string` and returns another `string` value with all characters of the input columns replaced by `*`. **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
 3. Snowflake supports cross-database references. As a result, user-defined functions can be created once and shared across all your available databases.
 
@@ -475,6 +478,7 @@ COMPUTE_WH@PLAYGROUND.FINANCE> SELECT CARD_FAMILY FROM CARDS LIMIT 2;
 
 ```
 
+##### UDF install location in Snowflake
 
 In the example above, the policy only refers to the UDF by its name. This is valid because in Snowflake, the database and schema named `CYRAL` has special meanings for the sidecar, as it is the default location where the sidecar looks for unqualified functions. This behavior allows for the use of a single Global Policy for different databases or repository types.
 
@@ -571,7 +575,7 @@ where:
 - `USER` is the specific database user, which has the required permissions to execute the above SQL commands.
 
 #### Notes
-1. The above script creates a new schema/database (synonyms), named `cyral`. Any other schema/database could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#add-section) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
+1. The above script creates a new schema/database (synonyms), named `cyral`. Any other schema/database could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#udf-install-location-in-mysql) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
 2. Above we have a simplistic UDF example that receives a column entry of type `TEXT` and returns another `TEXT` value with all characters of the input columns replaced by `*`. **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
 
 
@@ -646,6 +650,8 @@ mysql> select name from comp_band_table;
 +-----------+
 3 rows in set (0.00 sec)
 ```
+
+##### UDF install location in MySQL
 
 In the example above, the policy only refers to the UDF by its name. This is valid because in SQL Server, the schema/database `cyral` has a special meaning for the sidecar, as it is the default location where the sidecar looks for functions, when they are not fully qualified. This behavior allows for the use of a single Global Policy for different databases or repository types.
 
@@ -734,7 +740,7 @@ where:
 
 
 #### Notes
-1. The above script creates new database and schema, both named `cyral`. Any other database and schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#add-section) for a complete understanding on how the database and schema name impacts on how you refer to UDFs in policies.
+1. The above script creates new database and schema, both named `cyral`. Any other database and schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#udf-install-location-in-sql-server) for a complete understanding on how the database and schema name impacts on how you refer to UDFs in policies.
 2. Above we have a simplistic UDF example that receives a column entry of type `NVARCHAR` and returns another `NVARCHAR` value with all characters of the input columns replaced by `*`. **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
 3. SQL Server supports cross-database references. As a result, user-defined functions can be created once and shared across all your available databases.
 
@@ -807,6 +813,8 @@ name
 
 (3 rows affected)
 ```
+
+##### UDF install location in SQL Server
 
 In the example above, the policy only refers to the UDF by its name. This is valid because in SQL Server, both database and schema `cyral` have a special meaning for the sidecar, as it is the default location where the sidecar looks for functions, when they are not fully qualified. This behavior allows for the use of a single Global Policy for different databases or repository types.
 
@@ -890,7 +898,7 @@ where:
 - `USER` and `PASSWORD` are the specific database user and password, which has the required permissions to execute the above SQL commands.
 
 #### Notes
-1. The above script creates a new user schema, named `CYRAL`. Any other schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#add-section) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
+1. The above script creates a new user schema, named `CYRAL`. Any other schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#udf-install-location-in-oracle) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
 2. Above we have a simplistic UDF example that receives a column entry of type `VARCHAR` and returns another `VARCHAR` value with all characters of the input columns replaced by `*`. **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
 
 
@@ -959,6 +967,8 @@ NAME
 ******
 *********
 ```
+
+##### UDF install location in Oracle
 
 In the example above, the policy only refers to the UDF by its name. This is valid because in Oracle, the user schema `CYRAL` has a special meaning for the sidecar, as it is the default location where the sidecar looks for functions, when they are not fully qualified. This behavior allows for the use of a single Global Policy for different databases or repository types.
 
