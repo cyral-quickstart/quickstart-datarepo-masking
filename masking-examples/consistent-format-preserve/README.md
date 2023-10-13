@@ -120,12 +120,12 @@ ZaFxbcd517@dzbxq.pqd
 ```
 
 In the example above, the policy only refers to the UDF by its name. This is valid because the `${repo-type}-complete.sql` scripts install the functions in a default location known by the sidecar. Per repo type, these are the default locations:
-  * **Amazon Redshift**:  Database: `current` | Schema: `cyral`
+  * **Amazon Redshift**:  Database: `$current` | Schema: `cyral`
     * In Amazon Redshift, cross database references are not allowed, meaning the custom masking function must be installed in every target database.
   * **MySQL**: Database: `not applicable` | Schema: `cyral`
-  * **PostgreSQL**:  Database: `current` | Schema: `cyral`
+  * **PostgreSQL**:  Database: `$current` | Schema: `cyral`
     * In PostgreSQL, cross database references are not allowed, meaning the custom masking function must be installed in every target database.
-  * **Oracle**:  Database: `current` | Schema: `CYRAL`
+  * **Oracle**:  Database: `$current` | User/Schema: `CYRAL`
     * In Oracle, cross database references are not allowed, meaning the custom masking function must be installed in every target database.
   * **SQL Server**:  Database: `cyral` | Schema: `cyral`
   * **Snowflake**:  Database: `CYRAL` | Schema: `CYRAL`
