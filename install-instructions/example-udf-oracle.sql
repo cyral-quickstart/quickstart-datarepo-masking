@@ -1,4 +1,5 @@
 -- 1. Create a new user schema for storing the desired UDFs:
+-- NOTE: Replace <password>
 CREATE USER CYRAL identified by "<password>";
 
 -- 2. Create the new function in the target schema:
