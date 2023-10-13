@@ -771,7 +771,7 @@ and
 #### Testing the UDF with Cyral Policies
 
 Here we assume the following:
-  * A Oracle data repository was already created in the Control Plane / Management Console.
+  * An Oracle data repository was already created in the Control Plane / Management Console.
   * The data repository has the masking policy enforcement option enabled.
   * The data repository has the appropriate Data Labels already configured.
   * The data repository is accessible through a sidecar.

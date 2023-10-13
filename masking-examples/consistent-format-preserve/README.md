@@ -5,7 +5,7 @@ Brief Description
 -----------------
 Consistent Format Preserve is a custom masking function used to ensure consistent randomization of your data. The database is instructed to replace the field's contents with a semi-randomized string that preserves all hyphens, dots, and other punctuation in the string. Numbers are replaced with randomly chosen numbers, and letters with randomly chosen letters. Letter case is preserved, meaning lowercase letters are replaced with random lowercase letters, and uppercase with random uppercase letters.
 
-The data is consistently randomized, meaning that for a specific input value, the same randomized representation will be always generated. This behavior is particularly useful when different tables are subject to the same masking policy and you want to be able to find references of one table into the other.
+The data is consistently randomized, meaning that for a specific input value, the same randomized representation will always be generated. This behavior is particularly useful when different tables are subject to the same masking policy and you want to be able to find references of one table into the other.
 
 * **Example**: A mask declared as `custom:consistent_mask(EMAIL)` in a Global Policy may replace an address of `MyEmail123@cyral.com` with `ZaFxbcd517@dzbxq.pqd`.
 
