@@ -867,7 +867,7 @@ END;
 /
 
 -- 3. Grant the execution privilege to everyone, through the PUBLIC role
-GRANT ALL PRIVILEGES ON CYRAL."mask_string" TO PUBLIC;
+GRANT EXECUTE ON CYRAL."mask_string" TO PUBLIC;
 ```
 
 The above script can be saved to a file, e.g. `example-udf-oracle.sql`, and can be copied as is and executed in your application of choice. In `sqlplus`, considering you are already connected, it can be installed with the following command:
