@@ -23,7 +23,7 @@ The overall configuration process can be split into four main stages:
  - **Defining Requirements**: A security team or system administrators are responsible for defining the expected masking behavior when certain databases and tables are accessed by different users or groups.
  - **Function(s) development**: Database engineers write one or more user-defined functions that meet the requirements defined by the security team. These functions can be type specific, meant to act on specific database columns, or could be generic, allowing any column to be used as input.
  - **Function(s) deployment**: Database administrators install the custom function(s) in the desirable Database System, making them available to be used in Cyral Policies.
- - **Policy crafting**: Admins with write permissions to the Cyral Management Console write specific [Global or Repo-level Policies](https://cyral.com/docs/policy/policy-structure) that leverages the newly created user-defined functions, which should loaded and enforced by Cyral sidecars on future user queries.
+ - **Policy crafting**: Admins with write permissions to the Cyral Management Console write specific [Global or Repo-level Policies](https://cyral.com/docs/policy/policy-structure) that leverages the newly created user-defined functions, which will be loaded and enforced by Cyral sidecars on future user queries.
 
 
 #### Possible end-user workflows
@@ -31,8 +31,8 @@ The overall configuration process can be split into four main stages:
 ![EndUser workflows](./.github/imgs/end-user-workflows.png)
 
 After all required functions are installed and the policies are configured in the Management Console, two possible outcomes are expected for different users when executing the same query:
-* the query will returned masked data; or
-* the user will get unmasked results.
+* the query will return masked data; or
+* the query will return unmasked results.
 
 The diagram above illustrates these possible workflows. Different users execute the same SQL query `SELECT * from credit_cards`. The query goes through the Cyral sidecar, which loads and applies the required data policies. As a result, queries from some users, or group of users, would return masked (or transformed) data, while others would be able to see the original content present in the underlying database.
 
