@@ -853,27 +853,35 @@ The database user used to install the UDFs needs the following privileges:
 
 ```sql
 -- 1. Create a new user schema for storing the desired UDFs:
+-- NOTE: Replace <password>
 CREATE USER CYRAL identified by "<password>";
 
--- 2. Create the new function in the target schema:
-CREATE OR REPLACE FUNCTION CYRAL."mask_string"(
-  INPUT_STRING IN VARCHAR2
-)
-RETURN VARCHAR2
-IS
-    MASKED VARCHAR2(32767) := '';
-    I NUMBER := 1;
-BEGIN
-    WHILE I <= LENGTH(INPUT_STRING) LOOP
-        MASKED := MASKED || '*';
-        I := I + 1;
-    END LOOP;
-    RETURN MASKED;
+-- 2. Create the new function in the target package:
+CREATE OR REPLACE PACKAGE CYRAL.CYRALCUSTOMPKG IS
+    FUNCTION "mask_string"(input_string IN VARCHAR2) RETURN VARCHAR2;
+END;
+/
+
+CREATE OR REPLACE PACKAGE BODY CYRAL.CYRALCUSTOMPKG AS
+    FUNCTION "mask_string"(
+      input_string IN VARCHAR2
+    )
+    RETURN VARCHAR2
+    IS
+        masked VARCHAR2(32767) := '';
+        i NUMBER := 1;
+    BEGIN
+        WHILE i <= LENGTH(input_string) LOOP
+            masked := masked || '*';
+            i := i + 1;
+        END LOOP;
+        RETURN masked;
+    END;
 END;
 /
 
 -- 3. Grant the execution privilege to everyone, through the PUBLIC role
-GRANT EXECUTE ON CYRAL."mask_string" TO PUBLIC;
+GRANT EXECUTE ON CYRAL.CYRALCUSTOMPKG TO PUBLIC;
 ```
 
 The above script can be saved to a file, e.g. `example-udf-oracle.sql`, and can be copied as is and executed in your application of choice. In `sqlplus`, considering you are already connected, it can be installed with the following command:
@@ -885,7 +893,9 @@ SQL> @example-udf-oracle.sql
 
 User created.
 
-Function created.
+Package created.
+
+Package body created.
 
 Grant succeeded.
 ```
@@ -896,7 +906,7 @@ where:
 - `USER` and `PASSWORD` are the specific database user and password, which has the required permissions to execute the above SQL commands.
 
 #### Notes
-1. The above script creates a new user schema, named `CYRAL`. Any other schema could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#udf-install-location-in-oracle) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
+1. The above script creates a new user schema and package, named `CYRAL` and `CYRALCUSTOMPKG` respectively. Any other user schema and package could be used, however we recommend reading the section on [target schemas and impacts on Cyral Policies](#udf-install-location-in-oracle) for a complete understanding on how the schema name impacts on how you refer to UDFs in policies.
 2. Above we have a simplistic UDF example that receives a column entry of type `VARCHAR` and returns another `VARCHAR` value with all characters of the input columns replaced by `*`. **For a list of real-world example UDFs, please refer to: [masking-examples](../masking-examples)**.
 3. The script installs the UDFs in the same location as the [Cyral mask helper](https://cyral.com/docs/using-cyral/masking/#install-the-cyral-mask-helper-in-your-database). [Uninstalling](https://cyral.com/docs/using-cyral/masking/#remove-the-cyral-mask-function) the Cyral mask helper will also remove the previous installed UDF;
 
@@ -915,10 +925,10 @@ Sylvester
 and
 ```SQL
 # Retrieving data masked with the newly installed UDF
-SQL> SELECT CYRAL."mask_string"(NAME) FROM COMP_BAND_TABLE;
+SQL> SELECT CYRAL.CYRALCUSTOMPKG."mask_string"(NAME) FROM COMP_BAND_TABLE;
 
-CYRAL."mask_string"(NAME)
-----------------------------
+CYRAL.CYRALCUSTOMPKG."mask_string"(NAME)
+----------------------------------------
 *****
 ******
 *********
@@ -968,7 +978,7 @@ NAME
 
 ##### UDF install location in Oracle
 
-In the example above, the policy only refers to the UDF by its name. This is valid because in Oracle, the user schema `CYRAL` has a special meaning for the sidecar, as it is the default location where the sidecar looks for functions, when they are not fully qualified. This behavior allows for the use of a single Global Policy for different databases or repository types.
+In the example above, the policy only refers to the UDF by its name. This is valid because in Oracle, the package `CYRAL.CYRALCUSTOMPKG` has a special meaning for the sidecar, as it is the default location where the sidecar looks for functions, when they are not fully qualified. This behavior allows for the use of a single Global Policy for different databases or repository types.
 
 However, it is possible to install UDFs in any other schema, as long as Global Policies refer to them using qualified names. For the above example, a fully qualified table
 reference would be:
@@ -979,12 +989,12 @@ data:
 rules:
   - reads:
       - data:
-          - custom:CYRAL.mask_string(NAMES)
+          - custom:CYRAL.CYRALCUSTOMPKG.mask_string(NAMES)
         rows: any
         severity: low
 ```
 
-* note the `CYRAL.` prefix, which denotes the user schema name.
+* note the `CYRAL.CYRALCUSTOMPKG.` prefix, which denotes the user schema and package names.
 
 ---
 </details>
