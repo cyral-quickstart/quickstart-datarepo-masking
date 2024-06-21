@@ -50,15 +50,23 @@ If the above pre-conditions are not met, or you need further help in configuring
 ##### Example Global Policy that refers to the custom function
 
 For SQL Server:
-```yaml
-data:
-  - CCN
-rules:
-  - reads:
-      - data:
-          - custom:mask_ccn(CCN)
-        rows: any
-        severity: low
+```json
+{
+  "governedData": {
+    "labels": [
+      "CCN"
+    ]
+  },
+  "readRules": [
+    {
+      "constraints": {
+        "mask": {
+          "function": "custom:mask_ccn(CCN)"
+        }
+      }
+    }
+  ]
+}
 ```
 
 ##### Connecting and retrieving data
@@ -81,15 +89,23 @@ In the example above, the policy only refers to the UDF by its name. This is val
 However, it is possible to install UDFs in any other schema, as long as Global Policies refer to them using qualified names. For the above example, a fully qualified table
 reference would be:
 
-```yaml
-data:
-  - CCN
-rules:
-  - reads:
-      - data:
-          - custom:${database_name}.${schema_name}.mask_ccn(CCN)
-        rows: any
-        severity: low
+```json
+{
+  "governedData": {
+    "labels": [
+      "CCN"
+    ]
+  },
+  "readRules": [
+    {
+      "constraints": {
+        "mask": {
+          "function": "custom:${database_name}.${schema_name}.mask_ccn(CCN)"
+        }
+      }
+    }
+  ]
+}
 ```
 
 * `${database_name}` and `${schema_name}`, when applicable, must be replaced by the correct values representing the location where the custom masking function was installed.
