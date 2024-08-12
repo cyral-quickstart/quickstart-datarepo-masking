@@ -53,18 +53,26 @@ $$
 import hashlib
 
 
+# consistent_mask_hash is a reference implementation of a masking function that
+# preserves the format of the input data consistently, such that the same
+# input will always produce the same output. It replaces each alphanumeric
+# character with a character of the same type (uppercase, lowercase, or digit),
+# while leaving all other characters unchanged.
 def consistent_mask_hash(data):
     resp = []
+    # Explanation of some magic numbers below:
+    # 26 is the number of letters in the ISO Latin alphabet.
+    # 65 is the ASCII code for 'A'.
+    # 97 is the ASCII code for 'a'.
+    # 48 is the ASCII code for '0'.
+    # 10 is the number of digits (0-9).
     for i, char in enumerate(data):
         hash_hex = hashlib.sha256((str(i) + data).encode()).hexdigest()
         if 'A' <= char <= 'Z':
-            # 65 = ASCII code for 'A', mod 26 to wrap around.
             resp.append(chr((ord(char) - 65 + int(hash_hex[i % len(hash_hex)], 16)) % 26 + 65))
         elif 'a' <= char <= 'z':
-            # 97 = ASCII code for 'a', mod 26 to wrap around.
             resp.append(chr((ord(char) - 97 + int(hash_hex[i % len(hash_hex)], 16)) % 26 + 97))
         elif '0' <= char <= '9':
-            # 48 = ASCII code for '0', mod 10 to wrap around.
             resp.append(chr((ord(char) - 48 + int(hash_hex[i % len(hash_hex)], 16)) % 10 + 48))
         else:
             resp.append(char)
