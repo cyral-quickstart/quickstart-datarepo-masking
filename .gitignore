@@ -258,3 +258,4 @@ __debug_bin
 # Other
 /.run/
 /.terraform/
+/scratch/
