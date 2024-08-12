@@ -44,3 +44,32 @@ def consistent_mask(input_value):
 
 return consistent_mask(data)
 $$ LANGUAGE plpythonu;
+
+CREATE OR REPLACE FUNCTION ${SCHEMA}.consistent_mask_hash(data ANYELEMENT)
+    RETURNS ANYELEMENT
+    STABLE
+AS
+$$
+import hashlib
+
+
+def consistent_mask_hash(data):
+    resp = []
+    for i, char in enumerate(data):
+        hash_hex = hashlib.sha256((str(i) + data).encode()).hexdigest()
+        if 'A' <= char <= 'Z':
+            # 65 = ASCII code for 'A', mod 26 to wrap around.
+            resp.append(chr((ord(char) - 65 + int(hash_hex[i % len(hash_hex)], 16)) % 26 + 65))
+        elif 'a' <= char <= 'z':
+            # 97 = ASCII code for 'a', mod 26 to wrap around.
+            resp.append(chr((ord(char) - 97 + int(hash_hex[i % len(hash_hex)], 16)) % 26 + 97))
+        elif '0' <= char <= '9':
+            # 48 = ASCII code for '0', mod 10 to wrap around.
+            resp.append(chr((ord(char) - 48 + int(hash_hex[i % len(hash_hex)], 16)) % 10 + 48))
+        else:
+            resp.append(char)
+    return "".join(resp)
+
+
+return consistent_mask_hash(data)
+$$ LANGUAGE plpythonu;
