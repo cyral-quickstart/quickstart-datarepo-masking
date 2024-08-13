@@ -149,27 +149,33 @@ BEGIN
     DECLARE @i INT = 0;
     DECLARE @char CHAR(1);
     DECLARE @ascii_char INT;
-    DECLARE @hash_hex VARCHAR(64);
+    DECLARE @hash_bytes VARBINARY(32);
+    DECLARE @rand BIGINT;
 
     WHILE @i < LEN(@data)
     BEGIN
-        -- Explanation of some magic numbers below:
+        SET @char = SUBSTRING(@data, @i + 1, 1);
+        SET @ascii_char = ASCII(@char);
+        -- Explanation of the magic numbers below:
+        -- 48 is the ASCII code for '0'.
+        -- 122 is the ASCII code for 'z'.
+        -- 10 is the number of digits (0-9).
         -- 26 is the number of letters in the ISO Latin alphabet.
         -- 65 is the ASCII code for 'A'.
         -- 97 is the ASCII code for 'a'.
-        -- 48 is the ASCII code for '0'.
-        -- 10 is the number of digits (0-9).
-        SET @char = SUBSTRING(@data, @i + 1, 1);
-        SET @ascii_char = ASCII(@char);
-        SET @hash_hex = CONVERT(VARCHAR(64), HASHBYTES('SHA2_256', CAST(@i AS VARCHAR) + @data), 2);
-        IF @ascii_char BETWEEN 65 AND 90 -- between A and Z.
-            SET @resp = @resp + CHAR((@ascii_char - 65 + CONVERT(int, CONVERT(VARBINARY, '0' + SUBSTRING(@hash_hex, @i % LEN(@hash_hex) + 1, 1), 2))) % 26 + 65);
-        ELSE IF @ascii_char BETWEEN 97 AND 122 -- between a and z.
-            SET @resp = @resp + CHAR((@ascii_char - 97 + CONVERT(int, CONVERT(VARBINARY, '0' + SUBSTRING(@hash_hex, @i % LEN(@hash_hex) + 1, 1), 2))) % 26 + 97);
-        ELSE IF @ascii_char BETWEEN 48 AND 57 -- between 0 and 9.
-            SET @resp = @resp + CHAR((@ascii_char - 48 + CONVERT(int, CONVERT(VARBINARY, '0' + SUBSTRING(@hash_hex, @i % LEN(@hash_hex) + 1, 1), 2))) % 10 + 48);
-        ELSE -- non-alphanumeric characters.
+        IF @ascii_char < 48 OR @ascii_char > 122 -- not a digit or letter.
             SET @resp = @resp + @char;
+        ELSE BEGIN
+            SET @hash_bytes = HASHBYTES('SHA2_256', CAST(@i AS VARCHAR) + @data);
+            -- Use the first 4 bytes of the hash as a "random" number.
+            SET @rand = CONVERT(BIGINT, SUBSTRING(@hash_bytes, 1, 4))
+            IF @ascii_char BETWEEN 48 AND 57 -- between 0 and 9.
+                SET @resp = @resp + CHAR(@rand % 10 + 48);
+            ELSE IF @ascii_char BETWEEN 65 AND 90 -- between A and Z.
+                SET @resp = @resp + CHAR(@rand % 26 + 65);
+            ELSE IF @ascii_char BETWEEN 97 AND 122 -- between a and z.
+                SET @resp = @resp + CHAR(@rand % 26 + 97);
+        END;
         SET @i = @i + 1;
     END;
     RETURN @resp;
