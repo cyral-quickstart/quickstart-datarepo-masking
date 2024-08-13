@@ -7,10 +7,11 @@ import random
 # input will always produce the same output. It replaces each alphanumeric
 # character with a random character of the same type (uppercase, lowercase,
 # or digit), while leaving all other characters unchanged.
-def consistent_mask(data: str) -> str:
+def consistent_mask(data: str | int) -> str | int:
     rand = random.Random(data)
     resp = []
-    for char in data:
+    unmasked = data if isinstance(data, str) else str(data)
+    for char in unmasked:
         if '0' <= char <= '9':
             # 48 = ASCII code for '0', 57 = ASCII code for '9'.
             resp.append(chr(rand.randint(48, 57)))
@@ -22,7 +23,8 @@ def consistent_mask(data: str) -> str:
             resp.append(chr(rand.randint(97, 122)))
         else:
             resp.append(char)
-    return "".join(resp)
+    masked = "".join(resp)
+    return masked if isinstance(data, str) else int(masked)
 
 
 # consistent_mask_hash is a reference implementation of a masking function that
@@ -34,15 +36,16 @@ def consistent_mask(data: str) -> str:
 # "random" characters, as opposed to a PRNG. This makes it portable across
 # systems, as it does not rely on the system's random number generator
 # implementation.
-def consistent_mask_hash(data: str) -> str:
+def consistent_mask_hash(data: str | int) -> str | int:
     resp = []
+    unmasked = data if isinstance(data, str) else str(data)
     # Explanation of the magic numbers below:
     # 10 is the number of digits (0-9).
     # 48 is the ASCII code for '0'.
     # 26 is the number of letters in the ISO Latin alphabet.
     # 65 is the ASCII code for 'A'.
     # 97 is the ASCII code for 'a'.
-    for i, char in enumerate(data):
+    for i, char in enumerate(unmasked):
         if char < '0' or char > 'z':
             resp.append(char)
         else:
@@ -55,4 +58,5 @@ def consistent_mask_hash(data: str) -> str:
                 resp.append(chr(rand % 26 + 65))
             elif 'a' <= char <= 'z':
                 resp.append(chr(rand % 26 + 97))
-    return "".join(resp)
+    masked = "".join(resp)
+    return masked if isinstance(data, str) else int(masked)

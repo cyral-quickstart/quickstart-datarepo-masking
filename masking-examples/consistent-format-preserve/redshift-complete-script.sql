@@ -68,13 +68,19 @@ import hashlib
 # implementation.
 def consistent_mask_hash(data):
     resp = []
+    if isinstance(data, int):
+        ummasked = str(data)
+    elif isinstance(data, str):
+        unmasked = data
+    else:
+        return None
     # Explanation of the magic numbers below:
     # 10 is the number of digits (0-9).
     # 48 is the ASCII code for '0'.
     # 26 is the number of letters in the ISO Latin alphabet.
     # 65 is the ASCII code for 'A'.
     # 97 is the ASCII code for 'a'.
-    for i, char in enumerate(data):
+    for i, char in enumerate(unmasked):
         if char < '0' or char > 'z':
             resp.append(char)
         else:
@@ -87,7 +93,8 @@ def consistent_mask_hash(data):
                 resp.append(chr(rand % 26 + 65))
             elif 'a' <= char <= 'z':
                 resp.append(chr(rand % 26 + 97))
-    return "".join(resp)
+    masked = "".join(resp)
+    return masked if isinstance(data, str) else int(masked)
 
 
 return consistent_mask_hash(data)
