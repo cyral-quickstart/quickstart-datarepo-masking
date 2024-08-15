@@ -1,3 +1,8 @@
+# This file contains reference implementations of masking functions that
+# preserve the format of the input data consistently, such that the same
+# input will always produce the same output. The functions are implemented
+# in Python and can be used as UDFs in tools such as PySpark (e.g. with
+# AWS Glue or Databricks).
 import hashlib
 import random
 
@@ -35,7 +40,9 @@ def consistent_mask(data: str | int) -> str | int:
 # consistent_mask is that it uses the SHA-256 hash function to generate the
 # "random" characters, as opposed to a PRNG. This makes it portable across
 # systems, as it does not rely on the system's random number generator
-# implementation.
+# implementation. This implementation matches the behavior of the various
+# consistent_mask_hash SQL UDFs in the other files and will produce the same
+# output for the same input.
 def consistent_mask_hash(data: str | int) -> str | int:
     resp = []
     unmasked = data if isinstance(data, str) else str(data)
