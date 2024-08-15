@@ -2,6 +2,7 @@
 CREATE USER CYRAL identified by "<password>";
 
 GRANT EXECUTE ON DBMS_CRYPTO TO PUBLIC;
+GRANT EXECUTE ON UTL_RAW TO PUBLIC;
 
 -- 2. Create the new function in the target package:
 CREATE OR REPLACE PACKAGE CYRAL.CYRALCUSTOMPKG IS

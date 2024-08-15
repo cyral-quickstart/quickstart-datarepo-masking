@@ -82,7 +82,7 @@ def consistent_mask_hash(data):
         else:
             hash_bytes = hashlib.sha256((str(i) + data).encode()).digest()
             # Use the first 4 bytes of the hash as a "random" number.
-            rand = int.from_bytes(hash_bytes[:4])
+            rand = int.from_bytes(hash_bytes[:4], byteorder='big')
             if '0' <= char <= '9':
                 resp.append(chr(rand % 10 + 48))
             if 'A' <= char <= 'Z':
