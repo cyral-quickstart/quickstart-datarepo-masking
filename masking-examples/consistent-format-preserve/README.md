@@ -9,6 +9,9 @@ The data is consistently randomized, meaning that for a specific input value, th
 
 * **Example**: A mask declared as `custom:consistent_mask(EMAIL)` in a Global Policy may replace an address of `MyEmail123@cyral.com` with `ZaFxbcd517@dzbxq.pqd`.
 
+There are two versions of the function available:
+* `consistent_mask`: Uses a pseudorandom number generator to randomly generate characters. This version is likely to be more performant, but depends on the underlying database engine's PRNG algorithm to generate values, and thus may not be consistent across different database engines or tools.
+* `consistent_mask_hash`: Uses a SHA-256 hash of the value to generate pseudorandom numbers. This version is designed to be portable and consistent across database engines and tools. There is also a reference Python implementation of this function available in the [`python-udf.py`](./python-udf.py) file, which will produce the same results as the SQL implementations.
 
 Availability
 ------------
