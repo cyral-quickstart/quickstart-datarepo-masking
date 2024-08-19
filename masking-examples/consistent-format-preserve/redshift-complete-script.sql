@@ -49,7 +49,7 @@ def consistent_mask(input_value):
 return consistent_mask(data)
 $$ LANGUAGE plpythonu;
 
-CREATE OR REPLACE FUNCTION ${SCHEMA}.consistent_mask_hash(data ANYELEMENT)
+CREATE OR REPLACE FUNCTION cyral.consistent_mask_hash(data ANYELEMENT)
     RETURNS ANYELEMENT
     STABLE
 AS
@@ -86,7 +86,7 @@ def consistent_mask_hash(data):
         else:
             hash_bytes = hashlib.sha256((str(i) + data).encode()).digest()
             # Use the first 4 bytes of the hash as a "random" number.
-            rand = int.from_bytes(hash_bytes[:4], byteorder='big')
+            rand = int(hash_bytes[:4].encode('hex'), 16)
             if '0' <= char <= '9':
                 resp.append(chr(rand % 10 + 48))
             if 'A' <= char <= 'Z':
