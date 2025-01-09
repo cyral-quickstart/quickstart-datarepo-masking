@@ -1,8 +1,8 @@
 CREATE OR REPLACE FUNCTION mask_middle(
   data STRING,
   unmasked_prefix_len INT,
-       unmasked_suffix_len INT,
-       mask_char STRING
+  unmasked_suffix_len INT,
+  mask_char STRING
 ) RETURNS STRING
 AS
 $$
