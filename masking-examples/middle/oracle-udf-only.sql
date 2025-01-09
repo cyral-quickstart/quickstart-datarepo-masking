@@ -1,9 +1,19 @@
 CREATE OR REPLACE PACKAGE sys.cyral_pkg IS
-    FUNCTION "mask_middle"(data IN VARCHAR2, unmasked_prefix_len_in IN INT, unmasked_suffix_len_in IN INT, mask_char_in IN CHAR) RETURN VARCHAR2;
+  FUNCTION "mask_middle"(
+    data IN VARCHAR2,
+    unmasked_prefix_len_in IN INT,
+    unmasked_suffix_len_in IN INT,
+    mask_char_in IN CHAR
+  ) RETURN VARCHAR2;
 END;
 
 CREATE OR REPLACE PACKAGE BODY sys.cyral_pkg AS
-  FUNCTION "mask_middle"(data IN VARCHAR2, unmasked_prefix_len_in IN INT, unmasked_suffix_len_in IN INT, mask_char_in IN CHAR) RETURN VARCHAR2
+  FUNCTION "mask_middle"(
+    data IN VARCHAR2,
+    unmasked_prefix_len_in IN INT,
+    unmasked_suffix_len_in IN INT,
+    mask_char_in IN CHAR
+  ) RETURN VARCHAR2
   IS
     unmasked_prefix_len INT;
     unmasked_suffix_len INT;

@@ -1,5 +1,11 @@
-CREATE OR REPLACE FUNCTION mask_middle(data TEXT, unmasked_prefix_len INT, unmasked_suffix_len INT, mask_char CHAR)
-RETURNS TEXT AS $$
+CREATE OR REPLACE FUNCTION mask_middle(
+  data TEXT,
+  unmasked_prefix_len INT,
+  unmasked_suffix_len INT,
+  mask_char CHAR
+) RETURNS TEXT
+AS
+$$
 DECLARE
   prefix TEXT;
   middle TEXT;

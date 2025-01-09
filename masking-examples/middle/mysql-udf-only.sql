@@ -1,6 +1,9 @@
-CREATE FUNCTION mask_middle(data TEXT, unmasked_prefix_len INT, unmasked_suffix_len INT, mask_char CHAR)
-RETURNS TEXT
-DETERMINISTIC
+CREATE FUNCTION mask_middle(
+  data TEXT,
+  unmasked_prefix_len INT,
+  unmasked_suffix_len INT,
+  mask_char CHAR
+) RETURNS TEXT DETERMINISTIC
 BEGIN
   DECLARE prefix TEXT;
   DECLARE middle TEXT;

@@ -1,5 +1,9 @@
-CREATE OR ALTER FUNCTION mask_middle(@data NVARCHAR(MAX), @unmasked_prefix_len INT, @unmasked_suffix_len INT, @mask_char CHAR)
-RETURNS NVARCHAR(MAX)
+CREATE OR ALTER FUNCTION mask_middle(
+  @data NVARCHAR(MAX),
+  @unmasked_prefix_len INT,
+  @unmasked_suffix_len INT,
+  @mask_char CHAR
+) RETURNS NVARCHAR(MAX)
 AS
 BEGIN
   -- Handle null or empty string case
