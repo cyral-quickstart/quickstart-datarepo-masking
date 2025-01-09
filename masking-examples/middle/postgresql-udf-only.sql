@@ -27,6 +27,11 @@ BEGIN
     RETURN data;
   END IF;
 
+  -- Set default mask character
+  IF mask_char IS NULL OR mask_char = '' THEN
+    mask_char = '*';
+  END IF;
+
   -- Split prefix, middle and suffix
   prefix = SUBSTRING(data FROM 1 FOR unmasked_prefix_len);
   middle = SUBSTRING(data FROM unmasked_prefix_len + 1 FOR LENGTH(data) - unmasked_prefix_len - unmasked_suffix_len);

@@ -27,7 +27,9 @@ BEGIN
   END IF;
 
   -- Set default mask character
-  SET mask_char = COALESCE(mask_char, '*');
+  IF mask_char IS NULL OR mask_char = '' THEN
+    SET mask_char = '*';
+  END IF;
 
   -- Split prefix, middle and suffix
   SET prefix = SUBSTRING(data FROM 1 FOR unmasked_prefix_len);

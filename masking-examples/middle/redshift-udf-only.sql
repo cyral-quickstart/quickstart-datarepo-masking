@@ -21,7 +21,7 @@ SELECT CASE
         GREATEST(COALESCE($2, 0), 0) + 1, GREATEST(LENGTH($1) - GREATEST(COALESCE($2, 0), 0) - GREATEST(COALESCE($3, 0), 0), 0)
       ),
       '[a-zA-Z0-9]',
-      COALESCE($4, '*')
+      CASE WHEN $4 IS NULL OR $4 = '' THEN '*' ELSE $4 END
     ) ||
     -- Suffix
     SUBSTR($1, GREATEST(LENGTH($1) - GREATEST(COALESCE($3, 0), 0) + 1, 0))

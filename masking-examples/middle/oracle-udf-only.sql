@@ -17,6 +17,7 @@ CREATE OR REPLACE PACKAGE BODY sys.cyral_pkg AS
   IS
     unmasked_prefix_len INT;
     unmasked_suffix_len INT;
+    mask_char CHAR;
     prefix VARCHAR2(32767);
     middle VARCHAR2(32767);
     suffix VARCHAR2(32767);
@@ -37,12 +38,18 @@ CREATE OR REPLACE PACKAGE BODY sys.cyral_pkg AS
       RETURN data;
     END IF;
 
+    -- Set default mask character
+    mask_char := mask_char_in;
+    IF mask_char IS NULL OR mask_char = '' THEN
+      mask_char := '*';
+    END IF;
+
     -- Split prefix, middle and suffix
     prefix := SUBSTR(data, 1, unmasked_prefix_len);
     middle := SUBSTR(data, unmasked_prefix_len + 1, LENGTH(data) - unmasked_prefix_len - unmasked_suffix_len);
     suffix := SUBSTR(data, LENGTH(data) - unmasked_suffix_len + 1);
 
     -- Mask the middle part and concat all parts
-    RETURN prefix || REGEXP_REPLACE(middle, '[a-zA-Z0-9]', COALESCE(mask_char_in, '*')) || suffix;
+    RETURN prefix || REGEXP_REPLACE(middle, '[a-zA-Z0-9]', mask_char) || suffix;
   END;
 END;

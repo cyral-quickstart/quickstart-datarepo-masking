@@ -30,6 +30,12 @@ BEGIN
     RETURN @data
   END
 
+  -- Set default mask character
+  IF @mask_char IS NULL OR @mask_char = ''
+  BEGIN
+    SET @mask_char = '*'
+  END
+
   -- Init translations (note, sql server has no support for regex)
   DECLARE @digits_letters CHAR(62) = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
   DECLARE @translations CHAR(62) = REPLICATE(COALESCE(@mask_char, '*'), LEN(@digits_letters))
