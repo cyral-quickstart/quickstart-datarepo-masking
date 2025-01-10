@@ -1,4 +1,8 @@
-CREATE OR REPLACE FUNCTION ${SCHEMA}.mask_middle(
+-- 1. Create a new schema for storing the desired UDFs:
+CREATE SCHEMA IF NOT EXISTS cyral;
+
+-- 2. Create the new function in the target schema:
+CREATE OR REPLACE FUNCTION cyral.mask_middle(
   data TEXT,
   unmasked_prefix_len INT,
   unmasked_suffix_len INT,
@@ -41,3 +45,7 @@ BEGIN
   RETURN prefix || REGEXP_REPLACE(middle, '[a-zA-Z0-9]', COALESCE(mask_char, '*'), 'g') || suffix;
 END;
 $$ LANGUAGE plpgsql;
+
+
+-- 3. Grant the execution privilege to everyone, through the PUBLIC role
+GRANT EXECUTE ON FUNCTION cyral.mask_middle(TEXT, INT, INT, CHAR) TO PUBLIC;

@@ -1,4 +1,11 @@
-CREATE OR REPLACE PACKAGE ${USER_SCHEMA}.${PACKAGE} IS
+-- 1. Create a new user schema for storing the desired UDFs:
+CREATE USER CYRAL identified by "<password>";
+
+GRANT EXECUTE ON DBMS_CRYPTO TO PUBLIC;
+GRANT EXECUTE ON UTL_RAW TO PUBLIC;
+
+-- 2. Create the new function in the target package:
+CREATE OR REPLACE PACKAGE CYRAL.CYRALCUSTOMPKG IS
   FUNCTION "mask_middle"(
     data IN VARCHAR2,
     unmasked_prefix_len_in IN INT,
@@ -6,8 +13,9 @@ CREATE OR REPLACE PACKAGE ${USER_SCHEMA}.${PACKAGE} IS
     mask_char_in IN CHAR
   ) RETURN VARCHAR2;
 END;
+/
 
-CREATE OR REPLACE PACKAGE BODY ${USER_SCHEMA}.${PACKAGE} AS
+CREATE OR REPLACE PACKAGE BODY CYRAL.CYRALCUSTOMPKG AS
   FUNCTION "mask_middle"(
     data IN VARCHAR2,
     unmasked_prefix_len_in IN INT,
@@ -53,3 +61,7 @@ CREATE OR REPLACE PACKAGE BODY ${USER_SCHEMA}.${PACKAGE} AS
     RETURN prefix || REGEXP_REPLACE(middle, '[a-zA-Z0-9]', mask_char) || suffix;
   END;
 END;
+/
+
+-- 3. Grant the execution privilege to everyone, through the PUBLIC role
+GRANT EXECUTE ON CYRAL.CYRALCUSTOMPKG TO PUBLIC;

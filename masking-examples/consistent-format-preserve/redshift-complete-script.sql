@@ -102,3 +102,4 @@ $$ LANGUAGE plpythonu;
 
 -- 3. Grant the execution privilege to everyone, through the PUBLIC role
 GRANT EXECUTE ON FUNCTION cyral.consistent_mask(data ANYELEMENT) TO PUBLIC;
+GRANT EXECUTE ON FUNCTION cyral.consistent_mask_hash(data ANYELEMENT) TO PUBLIC;

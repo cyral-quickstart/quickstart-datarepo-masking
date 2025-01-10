@@ -1,4 +1,17 @@
-CREATE OR REPLACE FUNCTION ${DB}.${SCHEMA}."mask_middle"(
+-- 1. Create a new database for storing all your UDFs for custom masking
+CREATE DATABASE IF NOT EXISTS CYRAL;
+
+-- 2. Allow everyone to access the new database
+GRANT USAGE ON DATABASE CYRAL TO PUBLIC;
+
+-- 3. Create a new schema for holding the UDFs
+CREATE SCHEMA IF NOT EXISTS CYRAL.CYRAL;
+
+-- 4. Allow everyone to access the new schema
+GRANT USAGE ON SCHEMA CYRAL.CYRAL TO PUBLIC;
+
+-- 5. Create the new function in the target schema
+CREATE OR REPLACE FUNCTION CYRAL.CYRAL."mask_middle"(
   data VARCHAR,
   unmasked_prefix_len INT,
   unmasked_suffix_len INT,
@@ -27,3 +40,6 @@ CASE
     SUBSTR(data, GREATEST(LENGTH(data) - GREATEST(COALESCE(unmasked_suffix_len, 0), 0) + 1, 0))
 END
 $$;
+
+-- 6. Grant the execution privilege to everyone, through the PUBLIC role
+GRANT USAGE ON FUNCTION CYRAL.CYRAL."mask_middle"(VARCHAR, INT, INT, CHAR) TO PUBLIC;
