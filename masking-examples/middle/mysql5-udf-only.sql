@@ -1,4 +1,5 @@
-CREATE FUNCTION mask_middle(
+DELIMITER $
+CREATE FUNCTION ${SCHEMA}.mask_middle(
   data TEXT,
   unmasked_prefix_len INT,
   unmasked_suffix_len INT,
@@ -46,4 +47,5 @@ BEGIN
 
   -- Concatenate all parts
   RETURN CONCAT(prefix, middle, suffix);
-END
+END$
+DELIMITER ;
