@@ -9,7 +9,6 @@ BEGIN
   DECLARE prefix TEXT;
   DECLARE middle TEXT;
   DECLARE suffix TEXT;
-  DECLARE i INT DEFAULT 1;
 
   -- Handle null or empty string case
   IF data IS NULL OR LENGTH(data) = 0 THEN

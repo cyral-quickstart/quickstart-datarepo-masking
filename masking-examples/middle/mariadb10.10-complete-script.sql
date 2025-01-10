@@ -74,7 +74,7 @@ BEGIN
     SET result = "UDF has been installed successfully!";
   ELSE
     -- Requires anonymous user creation
-    SET result = "UDF installation failed, anonymous user is missing. Follow the steps to fix: 1 - Run \"CREATE USER IF NOT EXISTS ''@'%' IDENTIFIED WITH mysql_native_password BY '<STRONG_PASSWORD>';\" 2 - Rerun this script";
+    SET result = "UDF installation failed, anonymous user is missing. Follow the steps to fix: 1 - Run \"CREATE USER IF NOT EXISTS ''@'%' IDENTIFIED BY '<STRONG_PASSWORD>';\" 2 - Rerun this script";
   END IF;
 END$
 DELIMITER ;

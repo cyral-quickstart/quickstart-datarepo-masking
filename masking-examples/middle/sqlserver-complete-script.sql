@@ -62,3 +62,5 @@ GO
 -- 3. Grant the execution privilege to everyone, through the PUBLIC role
 GRANT CONNECT TO PUBLIC;
 GRANT EXECUTE ON OBJECT::cyral.mask_middle TO PUBLIC;
+
+SELECT "UDF has been installed successfully!" AS "Message";

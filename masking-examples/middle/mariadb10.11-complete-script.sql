@@ -55,31 +55,8 @@ BEGIN
 END$
 DELIMITER ;
 
--- 3. Grant execution privilege (Anonymous user permission)
-DROP PROCEDURE IF EXISTS cyral.setup_permissions;
-DELIMITER $
-CREATE PROCEDURE cyral.setup_permissions(
-  OUT result TEXT
-)
-BEGIN
-  DECLARE anonymous_user_exists INT;
-  DECLARE anonymous_user_exists_cursor CURSOR FOR SELECT 1 IN (SELECT 1 FROM mysql.user WHERE user = "" AND host = "%");
+-- 3. Grant execution privilege (PUBLIC ROLE)
+GRANT EXECUTE ON cyral.* TO PUBLIC;
+FLUSH PRIVILEGES;
 
-  OPEN anonymous_user_exists_cursor;
-  FETCH anonymous_user_exists_cursor INTO anonymous_user_exists;
-  CLOSE anonymous_user_exists_cursor;
-  IF anonymous_user_exists THEN
-    GRANT EXECUTE ON cyral.* TO ''@'%';
-    FLUSH PRIVILEGES;
-    SET result = "UDF has been installed successfully!";
-  ELSE
-    -- Requires anonymous user creation
-    SET result = "UDF installation failed, anonymous user is missing. Follow the steps to fix: 1 - Run \"CREATE USER IF NOT EXISTS ''@'%' IDENTIFIED WITH mysql_native_password BY '<STRONG_PASSWORD>';\" 2 - Rerun this script";
-  END IF;
-END$
-DELIMITER ;
-
-SET @perm_result="";
-CALL cyral.setup_permissions(@perm_result);
-DROP PROCEDURE IF EXISTS cyral.setup_permissions;
-SELECT @perm_result AS "Message";
+SELECT "UDF has been installed successfully!" AS "Message";

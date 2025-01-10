@@ -18,7 +18,6 @@ BEGIN
   DECLARE prefix TEXT;
   DECLARE middle TEXT;
   DECLARE suffix TEXT;
-  DECLARE i INT DEFAULT 1;
 
   -- Handle null or empty string case
   IF data IS NULL OR LENGTH(data) = 0 THEN
@@ -63,3 +62,5 @@ SET PERSIST mandatory_roles = CONCAT('CYRAL_MASKING_PERMISSIONS', COALESCE(CONCA
 
 -- 4.3. Enable CYRAL_MASKING_PERMISSIONS on login:
 SET PERSIST activate_all_roles_on_login = 1;
+
+SELECT "UDF has been installed successfully!" AS "Message";
