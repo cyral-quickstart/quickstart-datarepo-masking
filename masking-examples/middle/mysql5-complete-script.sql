@@ -1,10 +1,7 @@
 -- 1. Create a new user schema for storing the desired UDFs:
 CREATE SCHEMA IF NOT EXISTS cyral;
 
--- 2. MySQL requires to enable log_bin_trust_function_creators to create functions:
-SET GLOBAL log_bin_trust_function_creators = 1;
-
--- 3. Create the new function in the target schema:
+-- 2. Create the new function in the target schema:
 DROP FUNCTION IF EXISTS cyral.mask_middle;
 DELIMITER $
 CREATE FUNCTION cyral.mask_middle(
@@ -58,7 +55,7 @@ BEGIN
 END$
 DELIMITER ;
 
--- 4. Grant execution privilege (Anonymous user permission)
+-- 3. Grant execution privilege (Anonymous user permission)
 DROP PROCEDURE IF EXISTS cyral.setup_permissions;
 DELIMITER $
 CREATE PROCEDURE cyral.setup_permissions(
