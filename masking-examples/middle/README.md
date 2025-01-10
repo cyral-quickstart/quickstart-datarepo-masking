@@ -1,17 +1,17 @@
-# Masking Credit Card Number
+# Masking Middle
 
 
 Brief Description
 -----------------
-This example is a custom masking function used to mask part of a credit card number. The database is instructed to keep the last 4 digits of a credit card number field unmasked and mask the other initial digits with `*`. This behavior is particularly useful to protect customer's data and at the same time provide tailored access to the information.
+This example is a custom masking function used to mask part of a field. The database is instructed to keep the first N and last M characters of a field unmasked and mask the other characters with a custom character, like `*`. This behavior is particularly useful to protect customer's data and at the same time provide tailored access to the information.
 
-* **Example**: A mask declared as `custom:mask_ccn(CCN)` in a Global Policy may replace a credit card number `1234-1234-1234-1234` with `****-****-****-1234`.
+* **Example**: A mask declared as `{"function": "custom:mask_middle", "args": [3, 3, "#"]}` in a Global Policy may replace a credit card number `1234-1234-1234-1234` with `123#-####-####-#234`.
 
 
 Availability
 ------------
 
-:white_check_mark: SQL Server
+:white_check_mark: PostgreSQL <br> :white_check_mark: Amazon Redshift <br>  :white_check_mark: SQL Server <br> :white_check_mark: Oracle <br> :white_check_mark: MySQL/MariaDB <br> :white_check_mark: Snowflake
 
 Installation
 ------------
@@ -25,11 +25,44 @@ This directory contains two `.sql` files for each supported repo type:
 <br>
 
 #### Installation examples using CLI tools for the supported databases
+* PostgreSQL 
+  ```sh
+  psql -h ${SIDECAR_HOST} -p ${SIDECAR_PORT} -d ${DATABASE} -U ${USER} -f ./postgresql-complete-script.sql
+  ```
+* Amazon Redshift
+  ```sh
+  psql -h ${SIDECAR_HOST} -p ${SIDECAR_PORT} -d ${DATABASE} -U ${USER} -f ./redshift-complete-script.sql
+  ```
+* MySQL 5
+  ```sh
+  mysql -h ${SIDECAR_HOST} -P ${SIDECAR_PORT} -u ${USER} -p < mysql5-complete-script.sql
+  ```
+* MySQL >= 8
+  ```sh
+  mysql -h ${SIDECAR_HOST} -P ${SIDECAR_PORT} -u ${USER} -p < mysql8-complete-script.sql
+  ```
+* MariaDB <= 10.10
+  ```sh
+  mysql -h ${SIDECAR_HOST} -P ${SIDECAR_PORT} -u ${USER} -p < mariadb10.10-complete-script.sql
+  ```
+* MariaDB >= 10.11
+  ```sh
+  mysql -h ${SIDECAR_HOST} -P ${SIDECAR_PORT} -u ${USER} -p < mariadb10.11-complete-script.sql
+  ```
+* Oracle
+  ```sh
+  sqlplus ${USER}/${PASSWORD}@${SIDECAR_HOST}:${SIDECAR_PORT}/${DATABASE}
+
+  SQL> @oracle-complete-script.sql
+  ```
+* Snowflake
+  ```sh
+  snowsql -a ${SNOWFLAKE_ACCOUNT} -u ${USER} -h ${SIDECAR_ENDPOINT} -p ${SIDECAR_PORT} -w ${WAREHOUSE} -f ./snowflake-complete-script.sql
+  ```
 * SQL Server
   ```sh
   sqlcmd -C -S ${SIDECAR_HOST},${SIDECAR_PORT} -U ${USER} -i ./sqlserver-complete-script.sql
   ```
-
 <br>
 
 #### Adding references to the custom mask function in Cyral Global Policies
@@ -49,19 +82,19 @@ If the above pre-conditions are not met, or you need further help in configuring
 
 ##### Example Global Policy that refers to the custom function
 
-For SQL Server:
+A single global policy will be used across the different repository types: 
 ```json
 {
   "governedData": {
-    "labels": [
-      "CCN"
-    ]
+    "labels": ["CCN"]
   },
   "readRules": [
     {
+      "conditions": [],
       "constraints": {
         "mask": {
-          "function": "custom:mask_ccn(CCN)"
+          "function": "custom:mask_middle",
+          "args": [3, 3, "#"]
         }
       }
     }
@@ -74,17 +107,24 @@ For SQL Server:
 Every query that retrieves the contents of fields labeled as `CCN` will have the result payload masked. Note that the end-user is not expected to type the UDF name in their queries, and in fact, they are not even expected to be aware that such UDF exists.
 
 ```sql
-SELECT ccn FROM my_table;
-
-ccn
-----------------------------
-****-****-****-1234
-****-****-****-4444
-****-****-****-8888
+SELECT * FROM credit_card_numbers;
+     card_number     
+---------------------
+ 411#-####-####-#111
+ 550#-####-####-#004
+ 340#-####-####-#090
 ```
 
 In the example above, the policy only refers to the UDF by its name. This is valid because the `${repo-type}-complete-script.sql` scripts install the functions in a default location known by the sidecar. Per repo type, these are the default locations:
+  * **Amazon Redshift**:  Database: `$current` | Schema: `cyral`
+    * In Amazon Redshift, cross database references are not allowed, meaning the custom masking function must be installed in every target database.
+  * **MySQL/MariaDB**: Database: `not applicable` | Schema: `cyral`
+  * **PostgreSQL**:  Database: `$current` | Schema: `cyral`
+    * In PostgreSQL, cross database references are not allowed, meaning the custom masking function must be installed in every target database.
+  * **Oracle**:  Database: `$current` | User/Schema: `CYRAL`
+    * In Oracle, cross database references are not allowed, meaning the custom masking function must be installed in every target database.
   * **SQL Server**:  Database: `cyral` | Schema: `cyral`
+  * **Snowflake**:  Database: `CYRAL` | Schema: `CYRAL`
 
 However, it is possible to install UDFs in any other schema, as long as Global Policies refer to them using qualified names. For the above example, a fully qualified table
 reference would be:
@@ -92,15 +132,15 @@ reference would be:
 ```json
 {
   "governedData": {
-    "labels": [
-      "CCN"
-    ]
+    "labels": ["CCN"]
   },
   "readRules": [
     {
+      "conditions": [],
       "constraints": {
         "mask": {
-          "function": "custom:${database_name}.${schema_name}.mask_ccn(CCN)"
+          "function": "custom:custom:${database_name}.${schema_name}.mask_middle",
+          "args": [3, 3, "#"]
         }
       }
     }
