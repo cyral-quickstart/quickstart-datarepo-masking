@@ -1,4 +1,4 @@
-CREATE OR ALTER FUNCTION ${SCHEMA}.mask_middle(
+CREATE OR ALTER FUNCTION ${SCHEMA}.redact(
   @data NVARCHAR(MAX),
   @unmasked_prefix_len INT,
   @unmasked_suffix_len INT,

@@ -2,7 +2,7 @@
 CREATE SCHEMA IF NOT EXISTS cyral;
 
 -- 2. Create the new function in the target schema:
-CREATE OR REPLACE FUNCTION cyral.mask_middle(
+CREATE OR REPLACE FUNCTION cyral.redact(
   data TEXT,
   unmasked_prefix_len INT,
   unmasked_suffix_len INT,
@@ -48,4 +48,4 @@ $$ LANGUAGE plpgsql;
 
 
 -- 3. Grant the execution privilege to everyone, through the PUBLIC role
-GRANT EXECUTE ON FUNCTION cyral.mask_middle(TEXT, INT, INT, CHAR) TO PUBLIC;
+GRANT EXECUTE ON FUNCTION cyral.redact(TEXT, INT, INT, CHAR) TO PUBLIC;

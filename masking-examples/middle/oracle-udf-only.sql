@@ -1,5 +1,5 @@
 CREATE OR REPLACE PACKAGE ${USER_SCHEMA}.${PACKAGE} IS
-  FUNCTION "mask_middle"(
+  FUNCTION "redact"(
     data IN VARCHAR2,
     unmasked_prefix_len_in IN INT,
     unmasked_suffix_len_in IN INT,
@@ -8,7 +8,7 @@ CREATE OR REPLACE PACKAGE ${USER_SCHEMA}.${PACKAGE} IS
 END;
 
 CREATE OR REPLACE PACKAGE BODY ${USER_SCHEMA}.${PACKAGE} AS
-  FUNCTION "mask_middle"(
+  FUNCTION "redact"(
     data IN VARCHAR2,
     unmasked_prefix_len_in IN INT,
     unmasked_suffix_len_in IN INT,

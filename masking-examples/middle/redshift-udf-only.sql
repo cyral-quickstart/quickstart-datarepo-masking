@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION ${SCHEMA}.mask_middle(
+CREATE OR REPLACE FUNCTION ${SCHEMA}.redact(
   TEXT, -- $1 data
   INT, -- $2 unmasked_prefix_len
   INT, -- $3 unmasked_suffix_len

@@ -11,7 +11,7 @@ CREATE SCHEMA IF NOT EXISTS CYRAL.CYRAL;
 GRANT USAGE ON SCHEMA CYRAL.CYRAL TO PUBLIC;
 
 -- 5. Create the new function in the target schema
-CREATE OR REPLACE FUNCTION CYRAL.CYRAL."mask_middle"(
+CREATE OR REPLACE FUNCTION CYRAL.CYRAL."redact"(
   data VARCHAR,
   unmasked_prefix_len INT,
   unmasked_suffix_len INT,
@@ -42,4 +42,4 @@ END
 $$;
 
 -- 6. Grant the execution privilege to everyone, through the PUBLIC role
-GRANT USAGE ON FUNCTION CYRAL.CYRAL."mask_middle"(VARCHAR, INT, INT, CHAR) TO PUBLIC;
+GRANT USAGE ON FUNCTION CYRAL.CYRAL."redact"(VARCHAR, INT, INT, CHAR) TO PUBLIC;

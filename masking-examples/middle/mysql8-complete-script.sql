@@ -5,10 +5,10 @@ CREATE SCHEMA IF NOT EXISTS cyral;
 SET GLOBAL log_bin_trust_function_creators = 1;
 
 -- 3. Create the new function in the target schema:
-DROP FUNCTION IF EXISTS cyral.mask_middle;
+DROP FUNCTION IF EXISTS cyral.redact;
 
 DELIMITER $
-CREATE FUNCTION cyral.mask_middle(
+CREATE FUNCTION cyral.redact(
   data TEXT,
   unmasked_prefix_len INT,
   unmasked_suffix_len INT,

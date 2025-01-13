@@ -7,7 +7,7 @@ CREATE SCHEMA cyral;
 GO
 
 -- 2. Create the new function in the target schema:
-CREATE OR ALTER FUNCTION cyral.mask_middle(
+CREATE OR ALTER FUNCTION cyral.redact(
   @data NVARCHAR(MAX),
   @unmasked_prefix_len INT,
   @unmasked_suffix_len INT,
@@ -61,6 +61,6 @@ GO
 
 -- 3. Grant the execution privilege to everyone, through the PUBLIC role
 GRANT CONNECT TO PUBLIC;
-GRANT EXECUTE ON OBJECT::cyral.mask_middle TO PUBLIC;
+GRANT EXECUTE ON OBJECT::cyral.redact TO PUBLIC;
 
 SELECT "UDF has been installed successfully!" AS "Message";

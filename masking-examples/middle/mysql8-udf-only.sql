@@ -1,5 +1,5 @@
 DELIMITER $
-CREATE FUNCTION ${SCHEMA}.mask_middle(
+CREATE FUNCTION ${SCHEMA}.redact(
   data TEXT,
   unmasked_prefix_len INT,
   unmasked_suffix_len INT,

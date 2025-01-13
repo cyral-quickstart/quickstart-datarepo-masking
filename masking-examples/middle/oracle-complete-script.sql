@@ -6,7 +6,7 @@ GRANT EXECUTE ON UTL_RAW TO PUBLIC;
 
 -- 2. Create the new function in the target package:
 CREATE OR REPLACE PACKAGE CYRAL.CYRALCUSTOMPKG IS
-  FUNCTION "mask_middle"(
+  FUNCTION "redact"(
     data IN VARCHAR2,
     unmasked_prefix_len_in IN INT,
     unmasked_suffix_len_in IN INT,
@@ -16,7 +16,7 @@ END;
 /
 
 CREATE OR REPLACE PACKAGE BODY CYRAL.CYRALCUSTOMPKG AS
-  FUNCTION "mask_middle"(
+  FUNCTION "redact"(
     data IN VARCHAR2,
     unmasked_prefix_len_in IN INT,
     unmasked_suffix_len_in IN INT,

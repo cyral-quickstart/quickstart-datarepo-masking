@@ -5,7 +5,7 @@ Brief Description
 -----------------
 This example is a custom masking function used to mask part of a field. The database is instructed to keep the first N and last M characters of a field unmasked and mask the other characters with a custom character, like `*`. This behavior is particularly useful to protect customer's data and at the same time provide tailored access to the information.
 
-* **Example**: A mask declared as `{"function": "custom:mask_middle", "args": [3, 3, "#"]}` in a Global Policy may replace a credit card number `1234-1234-1234-1234` with `123#-####-####-#234`.
+* **Example**: A mask declared as `{"function": "custom:redact", "args": [3, 3, "#"]}` in a Global Policy may replace a credit card number `1234-1234-1234-1234` with `123#-####-####-#234`.
 
 
 Availability
@@ -93,7 +93,7 @@ A single global policy will be used across the different repository types:
       "conditions": [],
       "constraints": {
         "mask": {
-          "function": "custom:mask_middle",
+          "function": "custom:redact",
           "args": [3, 3, "#"]
         }
       }
@@ -139,7 +139,7 @@ reference would be:
       "conditions": [],
       "constraints": {
         "mask": {
-          "function": "custom:custom:${database_name}.${schema_name}.mask_middle",
+          "function": "custom:custom:${database_name}.${schema_name}.redact",
           "args": [3, 3, "#"]
         }
       }

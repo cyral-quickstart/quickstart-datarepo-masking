@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION ${DB}.${SCHEMA}."mask_middle"(
+CREATE OR REPLACE FUNCTION ${DB}.${SCHEMA}."redact"(
   data VARCHAR,
   unmasked_prefix_len INT,
   unmasked_suffix_len INT,
