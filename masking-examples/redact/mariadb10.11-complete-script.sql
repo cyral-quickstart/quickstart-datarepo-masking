@@ -1,3 +1,5 @@
+-- This script is designed for MariaDB 10.11 or later.
+
 -- 1. Create a new user schema for storing the desired UDFs:
 CREATE SCHEMA IF NOT EXISTS cyral;
 

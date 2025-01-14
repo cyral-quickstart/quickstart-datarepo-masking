@@ -1,3 +1,5 @@
+-- This UDF is designed for MariaDB 10 or later and MySQL 5.
+
 DELIMITER $
 CREATE FUNCTION ${SCHEMA}.redact(
   data TEXT,

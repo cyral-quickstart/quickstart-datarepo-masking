@@ -1,3 +1,6 @@
+-- This script is designed for MySQL 5.
+-- It requires the anonymous user ''@'%' to exist: CREATE USER IF NOT EXISTS '@'%' IDENTIFIED WITH mysql_native_password BY '<STRONG_PASSWORD>';
+
 -- 1. Create a new user schema for storing the desired UDFs:
 CREATE SCHEMA IF NOT EXISTS cyral;
 

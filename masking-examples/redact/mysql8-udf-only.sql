@@ -1,3 +1,5 @@
+-- This UDF is designed for MySQL 8 or later.
+
 DELIMITER $
 CREATE FUNCTION ${SCHEMA}.redact(
   data TEXT,

@@ -1,3 +1,6 @@
+-- This script is designed for MariaDB 10.10 or earlier.
+-- It requires the anonymous user ''@'%' to exist: CREATE USER IF NOT EXISTS '@'%' IDENTIFIED BY '<STRONG_PASSWORD>';
+
 -- 1. Create a new user schema for storing the desired UDFs:
 CREATE SCHEMA IF NOT EXISTS cyral;
 
