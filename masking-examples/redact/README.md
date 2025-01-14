@@ -1,4 +1,4 @@
-# Masking Middle
+# Partial Redaction
 
 
 Brief Description
