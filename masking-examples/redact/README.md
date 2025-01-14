@@ -3,7 +3,7 @@
 
 Brief Description
 -----------------
-This example is a custom masking function used to mask part of a field. The database is instructed to keep the first N and last M characters of a field unmasked and mask the other characters with a custom character, like `*`. This behavior is particularly useful to protect customer's data and at the same time provide tailored access to the information.
+This redact function can be used to mask parts of a string value. The function retains the first N and last M characters of its input unmasked and masks the other characters with a given character, like `*`. Note that only alphanumeric characters are replaced while other characters (e.g., `-`) are left intact.
 
 * **Example**: A mask declared as `{"function": "custom:redact", "args": [3, 3, "#"]}` in a Global Policy may replace a credit card number `1234-1234-1234-1234` with `123#-####-####-#234`.
 
