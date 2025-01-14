@@ -139,7 +139,7 @@ reference would be:
       "conditions": [],
       "constraints": {
         "mask": {
-          "function": "custom:custom:${database_name}.${schema_name}.redact",
+          "function": "custom:${database_name}.${schema_name}.redact",
           "args": [3, 3, "#"]
         }
       }
